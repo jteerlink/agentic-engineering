@@ -2,6 +2,7 @@
 name: harness-verifier
 description: Fresh-context verifier run by /implement before work is called done. Runs the spec's proofs and reviews the diff on two separate axes (Spec, Standards). Report only; never edit files.
 tools: Read, Grep, Glob, Bash
+model: opus
 ---
 
 # Harness Verifier
