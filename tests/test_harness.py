@@ -44,7 +44,7 @@ class Harness(unittest.TestCase):
     def test_verifier_model_pinned_to_opus(self):
         for f in ("assets/agents/harness-verifier.md", ".claude/agents/harness-verifier.md"):
             front = (ROOT / f).read_text().split("---")[1]
-            self.assertIn("\nmodel: opus\n", front, f"{f}: pin `model: opus` so the Router never downgrades verification.")
+            self.assertIn("\nmodel: opus\n", front, f"{f}: pin `model: opus` so verification always runs on the strongest model.")
 
     def test_adapted_skills_keep_attribution(self):
         for f in (ROOT / "assets/skills").glob("*/SKILL.md"):
