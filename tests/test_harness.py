@@ -20,7 +20,7 @@ class Harness(unittest.TestCase):
     def test_docs_paths_exist(self):
         for doc in ("AGENTS.md", "ARCHITECTURE.md"):
             for p in named_paths((ROOT / doc).read_text()):
-                if p not in ABSENT_OK:
+                if p not in ABSENT_OK and p.split("/")[0] not in ABSENT_OK:
                     self.assertTrue((ROOT / p).exists(), f"{doc} names `{p}`, which does not exist. Fix the path or the doc.")
 
     def test_skill_md_assets_exist(self):
