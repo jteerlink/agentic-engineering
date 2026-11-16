@@ -21,10 +21,10 @@ Give coding agents short, accurate direction: a root guide (`AGENTS.md`), an arc
    - each `<skill-dir>/assets/skills/<name>/SKILL.md` -> `.claude/skills/<name>/SKILL.md`, then replace every `{{repo: ...}}` marker with the repo's real seam, command, or source of truth (or delete the line if it doesn't apply);
    - one mirror for Codex: `ln -s ../.claude/skills .agents/skills` (never two copies);
    - `<skill-dir>/assets/agents/harness-verifier.md` -> `.claude/agents/harness-verifier.md` (fill its markers); `<skill-dir>/assets/agents/harness-verifier.toml` -> `.codex/agents/harness-verifier.toml` (it only points to the `.md`);
-   - append `.scratch/` to `.gitignore`.
+   - append `.scratch/`, `.agents/` and `.claude/` to `.gitignore` (add each line only if missing).
 3. If an architectural boundary already exists, seed `docs/adr/0001-<slug>.md` and an offline test that guards it. Don't create `GLOSSARY.md` up front; `/grill-with-docs` creates it on the first term.
 4. **Migrating an older harness** (ledger flow): turn decisions recorded in `docs/features/*.json` into ADRs and grep-style proofs into tests, then delete `docs/features/`, `docs/harness/validate_harness.py`, and the `grill-me`, `define-feature`, and `implement-feature` skills from `.claude/skills/` and `.agents/skills/`. Also delete any leftovers from older versions (`docs/harness/done-criteria.md`, `docs/runbooks/development-workflow.md`, `.claude/agents/harness-{scout,worker}.md`). Remove ledger and validator commands from `AGENTS.md`.
-5. Check: `grep -rn '{{repo:' .claude .codex` prints nothing; `ls .agents/skills/implement/SKILL.md` resolves; `git check-ignore -q .scratch/x`; `git diff --check`; the repo's test gate passes.
+5. Check: `grep -rn '{{repo:' .claude .codex` prints nothing; `ls .agents/skills/implement/SKILL.md` resolves; `git check-ignore -q .scratch/x .agents/skills .claude/skills/implement/SKILL.md` succeeds; `git diff --check`; the repo's test gate passes.
 
 ## Output
 
@@ -38,5 +38,5 @@ docs/adr/                      (when a boundary exists)
 .agents/skills -> ../.claude/skills
 .claude/agents/harness-verifier.md
 .codex/agents/harness-verifier.toml
-.gitignore                     (+ .scratch/)
+.gitignore                     (+ .scratch/, .agents/, .claude/)
 ```

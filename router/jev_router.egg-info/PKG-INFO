@@ -1,0 +1,5 @@
+Metadata-Version: 2.4
+Name: jev-router
+Version: 0.1.0
+Summary: Claude Code PreToolUse hook: Jev picks the model a subagent runs on
+Requires-Python: >=3.11
