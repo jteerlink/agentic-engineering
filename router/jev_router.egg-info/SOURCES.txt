@@ -1,7 +1,0 @@
-jev_router.py
-pyproject.toml
-jev_router.egg-info/PKG-INFO
-jev_router.egg-info/SOURCES.txt
-jev_router.egg-info/dependency_links.txt
-jev_router.egg-info/entry_points.txt
-jev_router.egg-info/top_level.txt
