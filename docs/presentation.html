@@ -1,0 +1,449 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Agentic Engineering Skill</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Widescreen briefing: one mechanism per 16:9 slide; open layouts, labeled handoffs, quiet chrome. */
+:root {
+  --bg: #edf1f6; --surface: #ffffff; --ink: #172538; --muted: #53647a; --rule: #c8d2df; --accent: #345bc0;
+  --display: "Instrument Serif", Georgia, serif;
+  --body: "Plus Jakarta Sans", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101722; --surface: #182231; --ink: #eff4fb; --muted: #acbbce; --rule: #3b4c63; --accent: #9ab5ff; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101722; --surface: #182231; --ink: #eff4fb; --muted: #acbbce; --rule: #3b4c63; --accent: #9ab5ff; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-snap-type: y proximity; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); line-height: 1.5; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); background: var(--bg); z-index: 10; }
+.slide {
+  min-height: 100svh; display: flex; align-items: center; justify-content: center;
+  padding-block: 24px; padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px)); scroll-snap-align: start;
+}
+.frame {
+  width: min(1440px, 100%, calc((100svh - 80px) * 16 / 9)); max-width: 100%; aspect-ratio: 16 / 9;
+  container-type: inline-size; background: var(--surface); border: 1px solid var(--rule);
+  padding: clamp(28px, 4vw, 64px); display: flex; flex-direction: column; justify-content: space-between; gap: 24px; min-width: 0;
+}
+.slide-head, .slide-foot { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
+.kicker, .slide-no, .label, .slide-foot { font-family: var(--mono); font-size: clamp(11px, 1.05cqw, 15px); }
+.kicker { color: var(--accent); letter-spacing: .09em; text-transform: uppercase; }
+.slide-no, .slide-foot { color: var(--muted); }
+.slide-no { font-variant-numeric: tabular-nums; }
+h1, h2, h3, p, figure { margin: 0; }
+h1, h2 { font-family: var(--display); font-weight: 400; line-height: 1.07; text-wrap: balance; }
+h1 { font-size: clamp(46px, 7cqw, 96px); }
+h2 { font-size: clamp(34px, 4.8cqw, 64px); }
+h3 { font-size: clamp(19px, 2cqw, 28px); line-height: 1.25; }
+em { color: var(--accent); }
+p, li, .content { font-size: clamp(17px, 1.8cqw, 24px); }
+p { max-width: 62ch; }
+.lead { color: var(--muted); font-size: clamp(20px, 2.2cqw, 30px); max-width: 52ch; }
+.small { font-size: clamp(14px, 1.35cqw, 19px); color: var(--muted); }
+code, .command { font-family: var(--mono); font-size: .82em; overflow-wrap: anywhere; }
+a { color: var(--accent); text-underline-offset: .2em; }
+button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.stack { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.grid { display: grid; gap: 32px; }
+.grid > *, .row > * { min-width: 0; }
+.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.label { color: var(--accent); text-transform: uppercase; letter-spacing: .06em; }
+.open-block { border-top: 2px solid var(--rule); padding-top: 20px; display: flex; flex-direction: column; gap: 12px; }
+.open-block.active { border-color: var(--accent); }
+.band { padding: 20px 24px; background: color-mix(in srgb, var(--accent) 7%, var(--surface)); border: 1px solid var(--rule); }
+.row { display: flex; align-items: center; gap: 22px; }
+.row.wrap { flex-wrap: wrap; }
+.route { display: grid; grid-template-columns: 1fr auto 1fr auto 1.2fr; gap: 22px; align-items: center; }
+.route .arrow { color: var(--accent); font-size: 32px; }
+.route-item { display: flex; flex-direction: column; gap: 10px; }
+.artifact { display: inline-block; font-family: var(--mono); font-size: clamp(12px, 1.3cqw, 18px); padding: 10px 14px; border: 1px solid var(--rule); background: var(--bg); }
+figure { display: flex; flex-direction: column; gap: 12px; }
+.diagram-scroll { overflow-x: auto; }
+.diagram { width: 100%; max-width: 100%; height: auto; display: block; color: var(--ink); }
+.diagram .node { fill: var(--surface); stroke: var(--rule); stroke-width: 1.5; }
+.diagram .highlight { fill: color-mix(in srgb, var(--accent) 8%, var(--surface)); stroke: var(--accent); }
+.diagram .edge { fill: none; stroke: currentColor; stroke-width: 1.7; }
+.diagram .optional { stroke-dasharray: 5 5; }
+.diagram text { font-family: var(--body); fill: currentColor; font-size: 19px; }
+.diagram .heading { font-size: 23px; font-weight: 600; }
+.diagram .sub { fill: var(--muted); font-size: 16px; }
+.diagram .path { font-family: var(--mono); font-size: 17px; }
+.diagram .accent { fill: var(--accent); }
+figcaption { font-size: clamp(14px, 1.25cqw, 18px); color: var(--muted); }
+pre { margin: 0; padding: 24px; background: var(--bg); border: 1px solid var(--rule); overflow-x: auto; font-family: var(--mono); font-size: clamp(12px, 1.3cqw, 18px); line-height: 1.65; }
+pre code { font-size: inherit; overflow-wrap: normal; }
+.revision { color: var(--accent); font-weight: 600; }
+.rules { display: flex; flex-direction: column; gap: 18px; }
+.rule-row { display: grid; grid-template-columns: .9fr 1.4fr; gap: 24px; padding-bottom: 18px; border-bottom: 1px solid var(--rule); }
+.rule-row:last-child { border-bottom: 0; padding-bottom: 0; }
+.status { font-family: var(--mono); font-size: clamp(15px, 1.5cqw, 21px); color: var(--accent); }
+.status-list { display: grid; gap: 18px; }
+.status-list > div { display: grid; grid-template-columns: 110px 1fr; gap: 12px; align-items: baseline; }
+.check { font-size: clamp(28px, 3cqw, 42px); color: var(--accent); line-height: 1; }
+.choices { display: grid; gap: 18px; }
+.choice { display: grid; grid-template-columns: .8fr 1.4fr; gap: 24px; border-bottom: 1px solid var(--rule); padding-bottom: 18px; align-items: baseline; }
+.choice:last-child { border-bottom: 0; }
+.deck-nav {
+  position: fixed; right: calc(16px + env(safe-area-inset-right, 0px)); bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  display: flex; gap: 4px; padding: 4px; background: var(--surface); border: 1px solid var(--rule); z-index: 20;
+}
+.deck-nav button { width: 44px; height: 40px; background: transparent; border: 0; color: var(--ink); cursor: pointer; font-size: 20px; }
+.deck-nav button:hover { background: var(--bg); }
+.deck-nav button:disabled { opacity: .35; cursor: default; }
+.progress { position: fixed; inset: env(safe-area-inset-top, 0px) 0 auto; height: 3px; background: var(--rule); z-index: 20; }
+.progress i { display: block; height: 100%; width: 10%; background: var(--accent); }
+.table-scroll { overflow-x: auto; }
+.pattern-table { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: clamp(13px, 1.25cqw, 18px); line-height: 1.35; }
+.pattern-table th, .pattern-table td { text-align: left; vertical-align: baseline; padding: 7px 32px 7px 0; border-bottom: 1px solid var(--rule); }
+.pattern-table th:last-child, .pattern-table td:last-child { padding-right: 0; }
+.pattern-table thead th { width: 33.33%; }
+.pattern-table thead th { font-family: var(--mono); font-size: clamp(11px, 1cqw, 14px); font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); border-bottom: 2px solid var(--rule); }
+.pattern-table thead th:last-child { color: var(--accent); }
+.pattern-table .group th { font-family: var(--mono); font-size: clamp(11px, 1cqw, 14px); font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); padding-top: 12px; }
+.pattern-table .challenge { color: var(--muted); }
+.pattern-table .pattern-name { font-weight: 600; }
+.pattern-desc { display: block; margin-top: 2px; font-size: .85em; font-weight: 400; color: var(--muted); }
+.pattern-table .solution::before { content: "→ "; color: var(--accent); }
+.refs { font-family: var(--mono); font-size: .62em; font-weight: 400; color: var(--accent); margin-left: 6px; white-space: nowrap; }
+.source-list { display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: clamp(12px, 1.1cqw, 15px); color: var(--muted); }
+.source-list b { font-family: var(--mono); color: var(--accent); font-weight: 500; margin-right: 4px; }
+@media (max-width: 760px) { .pattern-table { min-width: 720px; } }
+@media (max-width: 760px) {
+  html { scroll-snap-type: none; }
+  .slide { min-height: auto; padding-block: 12px; }
+  .frame { width: 100%; aspect-ratio: auto; padding: 24px; gap: 28px; }
+  .two, .three, .four { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .route { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .route .arrow { transform: rotate(90deg); width: fit-content; }
+  .diagram { min-width: 780px; }
+  .choice, .rule-row { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .slide-foot { flex-wrap: wrap; }
+  .deck-nav { position: sticky; width: fit-content; margin-left: auto; margin-right: 16px; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); }
+  main { padding-bottom: 20px; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+<div class="progress" aria-hidden="true"><i id="bar"></i></div>
+<main>
+<section class="slide" id="title" aria-labelledby="title-heading">
+  <div class="frame">
+    <header class="slide-head"><span class="kicker">Agentic engineering · The repo harness</span><span class="slide-no">01 / 12</span></header>
+    <div class="stack">
+      <h1 id="title-heading">Give agents a map.<br>Define done.<br><em>Check the result.</em></h1>
+      <p class="lead">Skills guide the work. The harness carries the rules, the contract, and the verification path.</p>
+    </div>
+    <div class="route content" aria-label="Define a contract, build the change, then independently verify it">
+      <div class="route-item"><span class="label">Contract</span><h3>What must be true?</h3></div>
+      <span class="arrow" aria-hidden="true">→</span>
+      <div class="route-item"><span class="label">Build</span><h3>Make the change.</h3></div>
+      <span class="arrow" aria-hidden="true">→</span>
+      <div class="route-item"><span class="label">Verify</span><h3>Prove it on the final tree.</h3></div>
+    </div>
+    <footer class="slide-foot"><span>One feature at a time</span><span>← → or Space · Theme ◐ · Fullscreen ⛶</span></footer>
+  </div>
+</section>
+
+<section class="slide" id="system" aria-labelledby="system-heading">
+  <div class="frame">
+    <header class="slide-head"><span class="kicker">The system</span><span class="slide-no">02 / 12</span></header>
+    <h2 id="system-heading">The harness connects <em>instructions to evidence.</em></h2>
+    <figure>
+      <div class="diagram-scroll">
+        <svg class="diagram" viewBox="0 0 1120 340" role="img" aria-label="Read left to right: repo rules guide skills, skills build code and tests, and a fresh verifier checks the result. Durable docs (glossary and ADRs) sit under the repo rules. Skills read an ephemeral spec and log the outcome there.">
+          <defs><marker id="system-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="currentColor"/></marker></defs>
+          <rect class="node" x="0" y="40" width="225" height="130" rx="4"/>
+          <text class="heading" x="20" y="78">Repo rules</text>
+          <text class="path" x="20" y="111">AGENTS.md</text>
+          <text class="path" x="20" y="141">ARCHITECTURE.md</text>
+          <path class="edge" d="M225 105H300" marker-end="url(#system-arrow)"/>
+          <text class="sub" x="262" y="89" text-anchor="middle">guide</text>
+          <rect class="node highlight" x="300" y="40" width="225" height="130" rx="4"/>
+          <text class="heading accent" x="320" y="78">Skills</text>
+          <text x="320" y="111">Grill · spec</text>
+          <text x="320" y="141">Implement</text>
+          <path class="edge" d="M525 105H600" marker-end="url(#system-arrow)"/>
+          <text class="sub" x="562" y="89" text-anchor="middle">build</text>
+          <rect class="node" x="600" y="40" width="225" height="130" rx="4"/>
+          <text class="heading" x="620" y="78">Code + tests</text>
+          <text x="620" y="111">Small working diff</text>
+          <text x="620" y="141">Proof commands</text>
+          <path class="edge" d="M825 105H900" marker-end="url(#system-arrow)"/>
+          <text class="sub" x="862" y="89" text-anchor="middle">review</text>
+          <rect class="node" x="900" y="40" width="220" height="130" rx="4"/>
+          <text class="heading" x="920" y="78">Fresh verifier</text>
+          <text x="920" y="111">Rerun proof</text>
+          <text x="920" y="141">Report PASS / FAIL</text>
+          <path class="edge" d="M412 179V249" marker-start="url(#system-arrow)" marker-end="url(#system-arrow)"/>
+          <text class="sub" x="432" y="207">Read spec</text>
+          <text class="sub" x="432" y="235">Log result</text>
+          <rect class="node highlight" x="300" y="260" width="525" height="75" rx="4"/>
+          <text class="heading" x="320" y="292">Spec · ephemeral</text>
+          <text class="path" x="320" y="319">.scratch/&lt;slug&gt;/spec.md · gitignored</text>
+          <path class="edge" d="M112 249V179" marker-end="url(#system-arrow)"/>
+          <text class="sub" x="122" y="221">inform</text>
+          <rect class="node" x="0" y="260" width="225" height="75" rx="4"/>
+          <text class="heading" x="20" y="292">Durable docs</text>
+          <text class="path" x="20" y="319">GLOSSARY · ADRs</text>
+        </svg>
+      </div>
+      <figcaption>The plan is thrown away after merge. Terms and hard-to-reverse decisions stay; so do the tests and the PR evidence.</figcaption>
+    </figure>
+    <footer class="slide-foot"><span>Skills are reusable instructions loaded when invoked.</span><span>The agent executes them using tools.</span></footer>
+  </div>
+</section>
+
+<section class="slide" id="patterns" aria-labelledby="patterns-heading">
+  <div class="frame">
+    <header class="slide-head"><span class="kicker">Field patterns · Lessons from teams running coding agents</span><span class="slide-no">03 / 12</span></header>
+    <h2 id="patterns-heading">Eight known failure modes, <em>eight fixes.</em></h2>
+    <div class="table-scroll">
+      <table class="pattern-table">
+        <thead><tr><th scope="col">The challenge</th><th scope="col">Pattern</th><th scope="col">How this harness solves it</th></tr></thead>
+        <tbody>
+          <tr class="group"><th colspan="3" scope="colgroup">Context + memory</th></tr>
+          <tr><td class="challenge">An agent fails, and the fix is a reworded prompt</td><td class="pattern-name">Fix the harness, not the prompt<span class="refs">[1,2,5]</span><span class="pattern-desc">Treat each failure as a missing rule, tool, or test.</span></td><td class="solution">Add an Invariant, Pattern, or proof</td></tr>
+          <tr><td class="challenge">Long docs go stale and crowd the context</td><td class="pattern-name">A map, not a manual<span class="refs">[1,2,5]</span><span class="pattern-desc">A short index that points to the right files.</span></td><td class="solution">Short <code>AGENTS.md</code> + <code>ARCHITECTURE.md</code></td></tr>
+          <tr><td class="challenge">Agents guess at data and runtime state</td><td class="pattern-name">Tools over prose<span class="refs">[2,3,5]</span><span class="pattern-desc">Agents check real state by running commands.</span></td><td class="solution">Read-only Inspect commands</td></tr>
+          <tr><td class="challenge">Lessons stay in one chat and repeat later</td><td class="pattern-name">Learn once, enforce always<span class="refs">[2,4,5]</span><span class="pattern-desc">Repeated corrections become rules every session loads.</span></td><td class="solution">Same mistake twice → one new rule</td></tr>
+        </tbody>
+        <tbody>
+          <tr class="group"><th colspan="3" scope="colgroup">Execution + verification</th></tr>
+          <tr><td class="challenge">“Done” gets decided after the code is written</td><td class="pattern-name">Define done before code<span class="refs">[1,4,5]</span><span class="pattern-desc">Agree on observable criteria and runnable checks first.</span></td><td class="solution"><code>/to-spec</code>: done-when + failing proof first</td></tr>
+          <tr><td class="challenge">Long tasks drift and lose progress</td><td class="pattern-name">One feature, state on disk<span class="refs">[3,4]</span><span class="pattern-desc">One scoped unit at a time; progress saved in files.</span></td><td class="solution">One <code>.scratch</code> spec; its Log holds progress</td></tr>
+          <tr><td class="challenge">Agents grade their own work too kindly</td><td class="pattern-name">Builder is not the checker<span class="refs">[4,5]</span><span class="pattern-desc">A fresh agent verifies; builders never self-approve.</span></td><td class="solution">Fresh <code>harness-verifier</code> reruns proof</td></tr>
+          <tr><td class="challenge">Agents take risky actions without asking</td><td class="pattern-name">Humans steer, agents execute<span class="refs">[1,2,5]</span><span class="pattern-desc">People set intent and approve risk; agents do the work.</span></td><td class="solution">Approval gates; commit only on request</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <footer class="source-list">
+      <span><b>[1]</b><a href="https://drive.google.com/file/d/1IR7CddF_2FyQo_PdfBNTaEA50EGiVt2r/view" target="_blank" rel="noopener noreferrer">Osmani, Saboo &amp; Kartakis · The New SDLC With Vibe Coding (2026)</a></span>
+      <span><b>[2]</b><a href="https://openai.com/index/harness-engineering/" target="_blank" rel="noopener noreferrer">OpenAI · Harness engineering (2026)</a></span>
+      <span><b>[3]</b><a href="https://www.anthropic.com/research/effective-harnesses-for-long-running-agents" target="_blank" rel="noopener noreferrer">Anthropic · Effective harnesses for long-running agents (2025)</a></span>
+      <span><b>[4]</b><a href="https://www.anthropic.com/research/harness-design-long-running-apps" target="_blank" rel="noopener noreferrer">Anthropic · Harness design for long-running apps (2026)</a></span>
+      <span><b>[5]</b><a href="https://engineering.fb.com/2026/10/15/ml-applications/how-meta-built-forum-ai-native-engineering/" target="_blank" rel="noopener noreferrer">Meta · AI-native engineering (2026)</a></span>
+    </footer>
+  </div>
+</section>
+
+<section class="slide" id="bootstrap" aria-labelledby="bootstrap-heading">
+  <div class="frame">
+    <header class="slide-head"><span class="kicker">Setup once · Reconcile when outdated</span><span class="slide-no">04 / 12</span></header>
+    <div class="stack"><h2 id="bootstrap-heading">Install once. Run <em>/agentic-engineering</em> per repo.</h2><p class="lead">A Claude Code and Codex plugin. It inspects the real repo, reconciles its guides, and installs the workflow.</p></div>
+    <div class="grid three content">
+      <div class="open-block"><span class="label">Context</span><h3>Where and how to work</h3><p class="small"><code>AGENTS.md</code> · repo rules<br><code>CLAUDE.md</code> · imports the rules<br><code>ARCHITECTURE.md</code> · system map</p></div>
+      <div class="open-block active"><span class="label">Execution</span><h3>Reusable skills + reviewer</h3><p class="small"><code>.claude/skills/</code><br>grill-with-docs · to-spec · implement · tdd<br>diagnosing-bugs · to-tickets · run-tickets<br>handoff · retro</p><p class="small"><code>.claude/agents/harness-verifier.md</code></p></div>
+      <div class="open-block"><span class="label">Process + knowledge</span><h3>How done is checked</h3><p class="small"><code>docs/harness/workflow.md</code><br><code>docs/harness/dashboard.html</code> · optional<br><code>GLOSSARY.md</code> · <code>docs/adr/</code> · durable<br><code>.scratch/</code> · specs, gitignored</p></div>
+    </div>
+    <div class="band row wrap"><span class="label">Install</span><code>/plugin install agentic-engineering@agentic-engineering</code><span aria-hidden="true">→</span><code>/agentic-engineering:agentic-engineering</code></div>
+    <footer class="slide-foot"><span>Existing rules and docs are reconciled, not blindly replaced.</span><span><code>.agents/skills</code> → <code>.claude/skills</code>: Claude and Codex read the same files.</span></footer>
+  </div>
+</section>
+
+<section class="slide" id="skills" aria-labelledby="skills-heading">
+  <div class="frame">
+    <header class="slide-head"><span class="kicker">The handoffs</span><span class="slide-no">05 / 12</span></header>
+    <h2 id="skills-heading">Each skill leaves <em>something usable.</em></h2>
+    <div class="route content">
+      <div class="route-item"><span class="label">Only if unclear</span><h3><code>/grill-with-docs</code></h3><p class="small">Rounds of numbered questions, each with a recommended answer.</p><span class="artifact">Decisions + GLOSSARY / ADRs</span></div>
+      <span class="arrow" aria-hidden="true">→</span>
+      <div class="route-item"><span class="label">Write the plan</span><h3><code>/to-spec</code></h3><p class="small">Agree test seams; proofs that fail today.</p><span class="artifact">Approved .scratch spec</span></div>
+      <span class="arrow" aria-hidden="true">→</span>
+      <div class="route-item"><span class="label">Build + check + log</span><h3><code>/implement &lt;spec&gt;</code></h3><p class="small">Red-first tdd, run proofs, call the verifier.</p><span class="artifact">Tested diff + spec Log + PR evidence</span></div>
+    </div>
+    <div class="grid two">
+      <div class="open-block"><span class="label">Human handoff</span><p>You approve the spec. <code>/to-spec</code> prints the implement command.</p></div>
+      <div class="open-block active"><span class="label">Automatic handoff</span><p><code>/implement</code> calls the fresh verifier after its proofs pass.</p></div>
+    </div>
+    <footer class="slide-foot"><span>Facts are the agent's job; decisions are yours.</span><span>Spec writing does not edit product code.</span></footer>
+  </div>
+</section>
+
+<section class="slide" id="execution" aria-labelledby="execution-heading">
+  <div class="frame">
+    <header class="slide-head"><span class="kicker">Inside /implement</span><span class="slide-no">06 / 12</span></header>
+    <h2 id="execution-heading">Build, prove, <em>review the final tree.</em></h2>
+    <figure>
+      <div class="diagram-scroll">
+        <svg class="diagram" viewBox="0 0 1120 300" role="img" aria-label="Read the spec and confirm its proofs fail, edit and run proofs, then independently verify. Failed proofs or review findings return to the builder, with at most three repairs for the same failure. Only a passing review proceeds to logging the result and drafting PR evidence.">
+          <defs><marker id="loop-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="currentColor"/></marker></defs>
+          <rect class="node" x="0" y="70" width="225" height="120" rx="4"/><text class="heading" x="20" y="107">Read + red</text><text x="20" y="143">Spec, rules, ADRs</text><text class="sub" x="20" y="171">Proofs fail first</text>
+          <rect class="node highlight" x="300" y="70" width="225" height="120" rx="4"/><text class="heading accent" x="320" y="107">Edit + run proof</text><text x="320" y="143">Smallest working diff</text><text class="sub" x="320" y="171">Every spec proof</text>
+          <rect class="node" x="600" y="70" width="225" height="120" rx="4"/><text class="heading" x="620" y="107">Fresh verifier</text><text x="620" y="143">Spec · Standards</text><text class="sub" x="620" y="171">Local vs Live proofs</text>
+          <rect class="node" x="900" y="70" width="220" height="120" rx="4"/><text class="heading" x="920" y="107">Log + hand back</text><text x="920" y="143">Spec Log + status</text><text class="sub" x="920" y="171">Draft PR evidence</text>
+          <path class="edge" d="M225 130H300" marker-end="url(#loop-arrow)"/><text class="sub" x="237" y="116">red</text>
+          <path class="edge" d="M525 130H600" marker-end="url(#loop-arrow)"/><text class="sub" x="538" y="116">exit 0</text>
+          <path class="edge" d="M825 130H900" marker-end="url(#loop-arrow)"/><text class="sub" x="841" y="116">PASS</text>
+          <path class="edge" d="M712 190V240H412V190" marker-end="url(#loop-arrow)"/><text class="sub" x="451" y="269">Review finding → repair + reverify</text>
+          <path class="edge" d="M475 70V25H350V70" marker-end="url(#loop-arrow)"/><text class="sub" x="360" y="16">Proof fails → repair</text>
+        </svg>
+      </div>
+      <figcaption>At most 3 repairs for the same failure, shared across build and review. Stop as blocked if unresolved, a required gate is unavailable, or an invariant conflicts.</figcaption>
+    </figure>
+    <div class="band"><p>Done applies to the <strong>checked revision</strong>. Blocked work logs tried / failed / untried in the spec.</p></div>
+    <footer class="slide-foot"><span>Keep assertions and fixtures intact.</span><span>Commit, push, and PR only when requested.</span></footer>
+  </div>
+</section>
+
+<section class="slide" id="tickets" aria-labelledby="tickets-heading">
+  <div class="frame">
+    <header class="slide-head"><span class="kicker">Work that spans sessions</span><span class="slide-no">07 / 12</span></header>
+    <h2 id="tickets-heading">Split it into tickets.<br><em>Run them unattended.</em></h2>
+    <div class="route content">
+      <div class="route-item"><span class="label">Slice the spec</span><h3><code>/to-tickets</code></h3><p class="small">Vertical slices with dependencies. You approve the split.</p><span class="artifact">.scratch/&lt;slug&gt;/issues/NN-*.md</span></div>
+      <span class="arrow" aria-hidden="true">→</span>
+      <div class="route-item"><span class="label">Work the frontier</span><h3><code>/run-tickets &lt;spec&gt;</code></h3><p class="small">Each ready ticket: <code>/implement</code>, verify, one commit.</p><span class="artifact">One worktree, one branch</span></div>
+      <span class="arrow" aria-hidden="true">→</span>
+      <div class="route-item"><span class="label">Hand back</span><h3>Draft PR</h3><p class="small">One per spec, updated as tickets land.</p><span class="artifact">You review and merge</span></div>
+    </div>
+    <div class="grid two">
+      <div class="open-block active"><span class="label">Stops, never guesses</span><p>Stops at the first blocked ticket; its Log is the handoff. A rerun resumes. Never merges, marks ready, or deploys.</p></div>
+      <div class="open-block"><span class="label">Optional ticket board</span><p>A read-only page that shows every ticket live: Waiting, Ready, Building, Done, Needs attention.</p></div>
+    </div>
+    <footer class="slide-foot"><span>Running /run-tickets approves pushing that spec's draft PR, nothing more.</span><span>Tickets stay in the main checkout; the board reads them there.</span></footer>
+  </div>
+</section>
+
+<section class="slide" id="guidance" aria-labelledby="guidance-heading">
+  <div class="frame">
+    <header class="slide-head"><span class="kicker">AGENTS.md in action · Illustrative</span><span class="slide-no">08 / 12</span></header>
+    <h2 id="guidance-heading">Short repo rules shape <em>real decisions.</em></h2>
+    <div class="rules content">
+      <div class="rule-row"><div class="stack"><span class="label">Invariant</span><h3>Protect the boundary</h3></div><p>Report totals change only with approval.<br><span class="small">List the affected reports before changing how a total is computed.</span></p></div>
+      <div class="rule-row"><div class="stack"><span class="label">Command</span><h3>Use the actual proof</h3></div><p>Tests run offline; do not weaken assertions.<br><span class="small">Use the repo’s test commands, not a guessed test strategy.</span></p></div>
+      <div class="rule-row"><div class="stack"><span class="label">Pattern</span><h3>Reuse the canonical example</h3></div><p>Copy <code>reports/summary.py</code> for a new report.<br><span class="small">Do not extend the legacy <code>reports_v1/</code> code.</span></p></div>
+    </div>
+    <div class="band row wrap"><span class="label">Repeated mistake</span><p>Same repo trap twice → one Invariant, Pattern, or automated check (<code>/retro</code>).</p></div>
+    <footer class="slide-foot"><span>ARCHITECTURE.md points to the right component.</span><span>AGENTS.md defines how to work there.</span></footer>
+  </div>
+</section>
+
+<section class="slide" id="ledger" aria-labelledby="ledger-heading">
+  <div class="frame">
+    <header class="slide-head"><span class="kicker">State on disk</span><span class="slide-no">09 / 12</span></header>
+    <h2 id="ledger-heading">The plan is disposable.<br><em>The knowledge is not.</em></h2>
+    <div class="grid two">
+      <div class="stack"><span class="label">Illustrative .scratch spec · Not a recorded result</span><pre><code># CSV export for reports
+Status: approved
+## Done when
+- [ ] export.csv returns the report (fails today)
+  proof: pytest tests/test_export.py
+## Must not change
+- [ ] Existing report totals stay the same
+  proof: pytest tests/test_reports.py
+## Log
+verifier PASS · local 2/2 · live NOT RUN</code></pre></div>
+      <div class="stack"><span class="label">What outlives the spec</span>
+        <div class="status-list content">
+          <div><span class="status">terms</span><p><code>GLOSSARY.md</code><br><span class="small">Domain language only, with words to avoid.</span></p></div>
+          <div><span class="status">adr</span><p><code>docs/adr/NNNN-slug.md</code><br><span class="small">Only if hard to reverse, surprising, and a real trade-off.</span></p></div>
+          <div><span class="status">tests</span><p>The proofs, kept in the repo.<br><span class="small">Expected values from an independent source, not the code under test.</span></p></div>
+          <div><span class="status">PR</span><p>Evidence: proof results, Local vs Live.</p></div>
+        </div>
+      </div>
+    </div>
+    <footer class="slide-foot"><span>Done when = behavior · Proof = runnable command · Must not change = guard rail</span><span>Spec is gitignored and deleted after merge.</span></footer>
+  </div>
+</section>
+
+<section class="slide" id="checks" aria-labelledby="checks-heading">
+  <div class="frame">
+    <header class="slide-head"><span class="kicker">Independent review</span><span class="slide-no">10 / 12</span></header>
+    <h2 id="checks-heading">One fresh verifier.<br><em>Two axes, never merged.</em></h2>
+    <div class="grid two content">
+      <div class="open-block active"><span class="label">Spec axis</span><h3>Did it do what was asked?</h3><p>Done-when items missing or partial.</p><p>Scope creep; implemented but wrong.</p><p class="small">Quotes the spec line for each finding.</p></div>
+      <div class="open-block"><span class="label">Standards axis</span><h3>Does it follow the repo's rules?</h3><p>Bugs, security, AGENTS.md invariants, ADRs.</p><p>Test integrity: nothing weakened, nothing tautological.</p><p class="small">Cites the rule for each finding.</p></div>
+    </div>
+    <div class="band"><p><strong>Proofs are reported Local and Live.</strong> A live check that cannot run here is NOT RUN, never a pass.</p></div>
+    <footer class="slide-foot"><span>Verifier never edits files.</span><span>Important findings block done.</span></footer>
+  </div>
+</section>
+
+<section class="slide" id="choose" aria-labelledby="choose-heading">
+  <div class="frame">
+    <header class="slide-head"><span class="kicker">Right-size the process</span><span class="slide-no">11 / 12</span></header>
+    <h2 id="choose-heading">Use the workflow <em>the task needs.</em></h2>
+    <div class="choices content">
+      <div class="choice"><h3>New / outdated harness</h3><p><code>/agentic-engineering:agentic-engineering</code></p></div>
+      <div class="choice"><h3>Small fix or bug</h3><p>Ask directly. Bugs: <code>/diagnosing-bugs</code> first.<br><span class="small">A red loop before any hypothesis. No spec unless the public contract changes.</span></p></div>
+      <div class="choice"><h3>New capability / contract change</h3><p><code>/to-spec</code> → <code>/implement &lt;spec&gt;</code><br><span class="small">Multi-session? <code>/to-tickets</code> → <code>/run-tickets &lt;spec&gt;</code>, one draft PR.</span></p></div>
+      <div class="choice"><h3>Scope or proof unclear</h3><p><code>/grill-with-docs</code> first → then spec and implement.<br><span class="small">Same session: the spec needs the reasoning first-hand.</span></p></div>
+    </div>
+    <footer class="slide-foot"><span>A clear request does not need an interview.</span><span>A small fix does not need a spec.</span></footer>
+  </div>
+</section>
+
+<section class="slide" id="close" aria-labelledby="close-heading">
+  <div class="frame">
+    <header class="slide-head"><span class="kicker">Takeaway</span><span class="slide-no">12 / 12</span></header>
+    <h2 id="close-heading">Human steers. Skills guide.<br><em>Agents build and check.</em></h2>
+    <div class="grid three content">
+      <div class="open-block"><span class="label">You own</span><h3>Intent + approval</h3><p class="small">Define the outcome. Resolve trade-offs. Approve protected changes.</p></div>
+      <div class="open-block active"><span class="label">Agents execute</span><h3>Build + independent review</h3><p class="small">Implement within the contract. Run proofs. Verify without the builder’s assumptions.</p></div>
+      <div class="open-block"><span class="label">The repo keeps</span><h3>Rules + knowledge</h3><p class="small">Short guidance, a glossary, and ADRs. Plans stay ephemeral; tests and PRs carry the proof.</p></div>
+    </div>
+    <div class="band row wrap"><span class="label">First feature</span><code>/grill-with-docs</code><span aria-hidden="true">→</span><code>/to-spec</code><span aria-hidden="true">→</span><code>/implement &lt;spec&gt;</code></div>
+    <footer class="slide-foot"><span>Source of truth: installed skills + docs/harness/workflow.md</span><span>16:9 desktop · Reflow on mobile</span></footer>  </div>
+</section>
+</main>
+<nav class="deck-nav" aria-label="Presentation controls">
+  <button type="button" id="theme" aria-label="Toggle light or dark theme" title="Toggle theme">◐</button>
+  <button type="button" id="prev" aria-label="Previous slide" title="Previous slide">←</button>
+  <button type="button" id="next" aria-label="Next slide" title="Next slide">→</button>
+  <button type="button" id="fullscreen" aria-label="Toggle fullscreen" title="Toggle fullscreen">⛶</button>
+</nav>
+<script>
+(function () {
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const bar = document.getElementById('bar');
+  const previous = document.getElementById('prev');
+  const next = document.getElementById('next');
+  let current = 0;
+  function update() {
+    current = 0;
+    for (let i = slides.length - 1; i >= 0; i--) {
+      if (slides[i].getBoundingClientRect().top <= window.innerHeight / 3) { current = i; break; }
+    }
+    bar.style.width = ((current + 1) / slides.length * 100) + '%';
+    previous.disabled = current === 0;
+    next.disabled = current === slides.length - 1;
+  }
+  function go(delta) {
+    slides[Math.max(0, Math.min(slides.length - 1, current + delta))].scrollIntoView({ block: 'start' });
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey || e.target.closest('button, a, input, textarea, select, summary, [contenteditable]')) return;
+    if (['ArrowDown', 'ArrowRight', 'PageDown', ' '].includes(e.key) && !e.shiftKey) { e.preventDefault(); go(1); }
+    else if (['ArrowUp', 'ArrowLeft', 'PageUp'].includes(e.key) || (e.key === ' ' && e.shiftKey)) { e.preventDefault(); go(-1); }
+    else if (e.key === 'Home') { e.preventDefault(); slides[0].scrollIntoView(); }
+    else if (e.key === 'End') { e.preventDefault(); slides[slides.length - 1].scrollIntoView(); }
+  });
+  next.addEventListener('click', () => go(1));
+  previous.addEventListener('click', () => go(-1));
+  document.getElementById('theme').addEventListener('click', function () {
+    const root = document.documentElement;
+    const dark = root.dataset.theme ? root.dataset.theme === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    root.dataset.theme = dark ? 'light' : 'dark';
+  });
+  document.getElementById('fullscreen').addEventListener('click', async function () {
+    try {
+      if (document.fullscreenElement) await document.exitFullscreen();
+      else if (document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen();
+    } catch (_) { /* Fullscreen is optional in embedded and mobile viewers. */ }
+  });
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+})();
+</script>

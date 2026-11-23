@@ -23,6 +23,8 @@ You run one command in a repo. The agent reads the codebase, finds the real test
 
 Claude Code and Codex share one copy of everything. Codex reads the same skills through a symlink, so the two never drift apart.
 
+Each piece answers a failure that teams running coding agents keep reporting. See [The research behind it](#the-research-behind-it).
+
 ## Install
 
 **Claude Code**
@@ -235,6 +237,30 @@ claude plugin validate .                # manifest check
 ```
 
 To release: bump `version` in `.claude-plugin/plugin.json` and `.codex-plugin/plugin.json` together (a test fails if they differ), then push to `main`. How the repo is laid out: [ARCHITECTURE.md](ARCHITECTURE.md). Rules for changing it: [AGENTS.md](AGENTS.md).
+
+## The research behind it
+
+Teams that run coding agents keep reporting the same eight ways it goes wrong. Each part of the harness exists to fix one of them:
+
+| What goes wrong | The pattern | How the harness does it |
+|---|---|---|
+| A failure gets "fixed" by rewording the prompt | **Fix the harness, not the prompt** [1,2,5]: treat each failure as a missing rule, tool, or test | Add an Invariant, a Pattern, or a proof |
+| Long docs go stale and crowd the context | **A map, not a manual** [1,2,5]: a short index that points to the right files | A short `AGENTS.md` and `ARCHITECTURE.md` |
+| Agents guess at data and runtime state | **Tools over prose** [2,3,5]: check real state by running commands | Read-only Inspect commands in `AGENTS.md` |
+| Lessons stay in one chat and get repeated | **Learn once, enforce always** [2,4,5]: repeated corrections become rules every session loads | Same mistake twice → one new rule (`/retro`) |
+| "Done" is decided after the code is written | **Define done before code** [1,4,5]: agree on observable criteria and runnable checks first | `/to-spec`: every goal gets a proof that fails today |
+| Long tasks drift and lose progress | **One feature, state on disk** [3,4]: one scoped unit at a time, with progress kept in files | One `.scratch` spec, or one ticket, with its own Log |
+| Agents grade their own work too kindly | **The builder is not the checker** [4,5]: a fresh agent verifies; builders never approve themselves | `harness-verifier` reruns the proofs in a fresh context |
+| Agents take risky actions without asking | **Humans steer, agents execute** [1,2,5]: people set intent and approve risk | Approval gates; commits only on request; never merges |
+
+Sources:
+1. Osmani, Saboo & Kartakis, [*The New SDLC With Vibe Coding*](https://drive.google.com/file/d/1IR7CddF_2FyQo_PdfBNTaEA50EGiVt2r/view) (2026)
+2. OpenAI, [Harness engineering](https://openai.com/index/harness-engineering/) (2026)
+3. Anthropic, [Effective harnesses for long-running agents](https://www.anthropic.com/research/effective-harnesses-for-long-running-agents) (2025)
+4. Anthropic, [Harness design for long-running apps](https://www.anthropic.com/research/harness-design-long-running-apps) (2026)
+5. Meta, [AI-native engineering](https://engineering.fb.com/2026/10/15/ml-applications/how-meta-built-forum-ai-native-engineering/) (2026)
+
+The full story is a 12-slide deck: [docs/presentation.html](docs/presentation.html). GitHub shows HTML as source, so clone the repo and run `open docs/presentation.html`. Use the arrow keys or Space to move between slides.
 
 ## Credits and license
 
