@@ -18,6 +18,6 @@ codex plugin marketplace add jteerlink/agentic-engineering
 codex plugin add agentic-engineering@agentic-engineering
 ```
 
-Then, from the root of the repo you want to set up, run `/agentic-engineering` in Claude Code, or ask Codex to use the agentic-engineering skill. Rerun it to update an existing harness.
+Then, from the root of the repo you want to set up, run `/agentic-engineering:agentic-engineering` in Claude Code (plugin skills are prefixed with the plugin name), or ask Codex to use the agentic-engineering skill. Rerun it to update an existing harness.
 
 What it writes is listed under Output in [skills/agentic-engineering/SKILL.md](skills/agentic-engineering/SKILL.md).
