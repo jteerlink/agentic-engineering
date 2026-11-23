@@ -12,8 +12,8 @@ Write down what was decided, without running a new interview. The spec is a work
 ## Steps
 
 1. If you haven't already, read `AGENTS.md`, `ARCHITECTURE.md`, `GLOSSARY.md`, the relevant ADRs, and the source and tests in the area. Use the glossary's terms throughout.
-2. **Agree the testing seams with the user first.** Prefer existing seams, ideally one, at the highest level that still catches the bug. The highest seam is an install into a throwaway repo checked with `SKILL.md` step 5; the offline seam is `tests/test_harness.py`. Give each seam one line on what it catches and what it misses.
-3. Draft the spec below. Every **Done when** item needs a runnable proof command. At least one per item must fail on the current code, unless the work is behavior-preserving; say so under Done when if it is. Expected values come from an independent source: `SKILL.md` and `references/guide.md` (upstream mattpocock/skills for adapted skills), or a worked example. Never recompute them the way the code does.
+2. **Agree the testing seams with the user first.** Prefer existing seams, ideally one, at the highest level that still catches the bug. The highest seam is an install into a throwaway repo checked with `skills/agentic-engineering/SKILL.md` step 5; the offline seam is `tests/test_harness.py`. Give each seam one line on what it catches and what it misses.
+3. Draft the spec below. Every **Done when** item needs a runnable proof command. At least one per item must fail on the current code, unless the work is behavior-preserving; say so under Done when if it is. Expected values come from an independent source: `skills/agentic-engineering/SKILL.md` and `skills/agentic-engineering/references/guide.md` (upstream mattpocock/skills for adapted skills), or a worked example. Never recompute them the way the code does.
 4. Show the user the spec and wait for approval. Revise on feedback.
 5. Write `.scratch/<slug>/spec.md` with `Status: approved`. End by printing `/implement .scratch/<slug>/spec.md`.
 
