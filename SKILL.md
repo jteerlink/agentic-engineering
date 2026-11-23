@@ -1,9 +1,9 @@
 ---
 name: agentic-engineering
-description: Inspect a repository and create or reconcile its agent harness — AGENTS.md (with CLAUDE.md as @AGENTS.md), ARCHITECTURE.md, docs/harness/workflow.md, and Pocock-style skills (grill-with-docs, to-spec, to-tickets, implement, tdd, diagnosing-bugs, handoff, retro) plus a harness-verifier agent, mirrored for Claude Code and Codex. Plans are ephemeral .scratch specs; durable knowledge is GLOSSARY.md and docs/adr/.
+description: Inspect a repository and create or reconcile its agent harness — AGENTS.md (with CLAUDE.md as @AGENTS.md), ARCHITECTURE.md, docs/harness/workflow.md, and Pocock-style skills (grill-with-docs, to-spec, to-tickets, implement, tdd, diagnosing-bugs, handoff, retro) plus run-tickets (unattended ticket runs into one draft PR), a harness-verifier agent, and an optional read-only ticket dashboard (docs/harness/dashboard.html), mirrored for Claude Code and Codex. Plans are ephemeral .scratch specs; durable knowledge is GLOSSARY.md and docs/adr/.
 ---
 
-<!-- Skills under assets/skills are adapted from mattpocock/skills, MIT License, Copyright (c) 2026 Matt Pocock -->
+<!-- Skills under assets/skills (except run-tickets, written here) are adapted from mattpocock/skills, MIT License, Copyright (c) 2026 Matt Pocock -->
 
 # Agentic Engineering
 
@@ -21,6 +21,7 @@ Give coding agents short, accurate direction: a root guide (`AGENTS.md`), an arc
    - each `<skill-dir>/assets/skills/<name>/SKILL.md` -> `.claude/skills/<name>/SKILL.md`, then replace every `{{repo: ...}}` marker with the repo's real seam, command, or source of truth (or delete the line if it doesn't apply);
    - one mirror for Codex: `ln -s ../.claude/skills .agents/skills` (never two copies);
    - `<skill-dir>/assets/agents/harness-verifier.md` -> `.claude/agents/harness-verifier.md` (fill its markers); `<skill-dir>/assets/agents/harness-verifier.toml` -> `.codex/agents/harness-verifier.toml` (it only points to the `.md`);
+   - only if the user wants the ticket dashboard: `<skill-dir>/assets/dashboard.html` -> `docs/harness/dashboard.html` (copied as is; it has no markers);
    - append `.scratch/`, `.agents/` and `.claude/` to `.gitignore` (add each line only if missing).
 3. If an architectural boundary already exists, seed `docs/adr/0001-<slug>.md` and an offline test that guards it. Don't create `GLOSSARY.md` up front; `/grill-with-docs` creates it on the first term.
 4. **Migrating an older harness** (ledger flow): turn decisions recorded in `docs/features/*.json` into ADRs and grep-style proofs into tests, then delete `docs/features/`, `docs/harness/validate_harness.py`, and the `grill-me`, `define-feature`, and `implement-feature` skills from `.claude/skills/` and `.agents/skills/`. Also delete any leftovers from older versions (`docs/harness/done-criteria.md`, `docs/runbooks/development-workflow.md`, `.claude/agents/harness-{scout,worker}.md`). Remove ledger and validator commands from `AGENTS.md`.
@@ -33,8 +34,9 @@ AGENTS.md
 CLAUDE.md
 ARCHITECTURE.md
 docs/harness/workflow.md
+docs/harness/dashboard.html   (optional, when asked)
 docs/adr/                      (when a boundary exists)
-.claude/skills/{grill-with-docs,to-spec,to-tickets,implement,tdd,diagnosing-bugs,handoff,retro}/SKILL.md
+.claude/skills/{grill-with-docs,to-spec,to-tickets,run-tickets,implement,tdd,diagnosing-bugs,handoff,retro}/SKILL.md
 .agents/skills -> ../.claude/skills
 .claude/agents/harness-verifier.md
 .codex/agents/harness-verifier.toml

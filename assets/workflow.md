@@ -1,7 +1,8 @@
 # Feature Workflow
 
 ```text
-/grill-with-docs (if unclear) -> /to-spec -> [/to-tickets] -> /implement -> PR
+/grill-with-docs (if unclear) -> /to-spec -> /implement -> PR
+                                        \-> /to-tickets -> /run-tickets -> draft PR  (multi-session work)
 ```
 
 ## Where things live
@@ -17,7 +18,8 @@
 
 1. **Clarify** (`/grill-with-docs`, only when scope, a domain rule, defect vs. trade-off, or proof is unclear): rounds of numbered questions with recommended answers; terms and ADRs written as they settle.
 2. **Spec** (`/to-spec`; skip for small fixes): agree test seams, then Done-when items each with a proof that fails today, Must-not-change proofs, risks and approval gates. User approves before building.
-3. **Tickets** (`/to-tickets`, only for multi-session work): vertical slices with blocking edges.
+3. **Tickets** (`/to-tickets`, only for multi-session work): vertical slices with blocking edges. `/run-tickets <spec>` works the frontier unattended: each ticket through `/implement` in one worktree, a commit per ticket, one draft PR per spec, stopping at the first blocked ticket. It never merges.
+   Dashboard (optional, read-only, if `docs/harness/dashboard.html` is installed): `ln -sf ../docs/harness/dashboard.html .scratch/dashboard.html && python3 -m http.server 8765 --bind 127.0.0.1 -d .scratch`, then open http://127.0.0.1:8765/dashboard.html. It serves only `.scratch/`.
 4. **Implement** (`/implement <spec>`): `/tdd` red-first at agreed seams, smallest change, 3-repair limit, fresh `harness-verifier` (Spec and Standards axes, Local vs Live proofs), result logged in the spec.
 5. **PR**: evidence from the spec's Log; commit or open a PR only when asked.
 

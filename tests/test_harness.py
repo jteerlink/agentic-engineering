@@ -6,6 +6,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 # ponytail: deliberately absent paths; GLOSSARY.md is created lazily, .scratch/ is gitignored
 ABSENT_OK = {"GLOSSARY.md", ".scratch", "docs/features", "validate_harness.py"}
+# Skills written here, not adapted from mattpocock/skills, so they carry no MIT attribution
+ORIGINAL_SKILLS = {"run-tickets"}
 
 
 def named_paths(text):
@@ -46,8 +48,26 @@ class Harness(unittest.TestCase):
             front = (ROOT / f).read_text().split("---")[1]
             self.assertIn("\nmodel: opus\n", front, f"{f}: pin `model: opus` so verification always runs on the strongest model.")
 
+    def test_skill_md_lists_every_skill(self):
+        text = (ROOT / "SKILL.md").read_text()
+        description = text.split("---")[1]
+        output = text.split("## Output")[1]
+        for f in (ROOT / "assets/skills").glob("*/SKILL.md"):
+            d = f.parent
+            for where, part in (("description", description), ("Output", output)):
+                self.assertIn(d.name, part, f"SKILL.md {where} does not name `{d.name}`; Install, Output and description change together (AGENTS.md).")
+
+    def test_dashboard_is_self_contained(self):
+        f = ROOT / "assets/dashboard.html"
+        self.assertTrue(f.exists(), "assets/dashboard.html is missing.")
+        html = f.read_text()
+        self.assertNotRegex(html, r"(src|href)=[\"']?https?:", "The dashboard must not load anything from the network; inline it.")
+        self.assertNotIn("innerHTML", html, "Ticket text is untrusted; render it with textContent, never innerHTML.")
+
     def test_adapted_skills_keep_attribution(self):
         for f in (ROOT / "assets/skills").glob("*/SKILL.md"):
+            if f.parent.name in ORIGINAL_SKILLS:
+                continue
             self.assertIn("MIT License, Copyright (c) 2026 Matt Pocock", f.read_text(), f"{f.relative_to(ROOT)} lost its MIT attribution comment.")
 
 
