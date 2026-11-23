@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Workflow Diagram</title>
+<link rel="icon" href="data:,">
+<!-- Source for docs/images/workflow-{light,dark}.png. Edit here, then re-screenshot #diagram in both themes (?theme=light|dark). -->
+<style>
+  :root {
+    color-scheme: light;
+    --bg: oklch(0.975 0.004 260); --surface: oklch(1 0 0); --lane: oklch(0.955 0.006 260);
+    --line: oklch(0.885 0.009 260); --text: oklch(0.23 0.016 260); --muted: oklch(0.47 0.016 260);
+    --blue: oklch(0.53 0.16 258); --green: oklch(0.52 0.13 142); --amber: oklch(0.55 0.13 62);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: oklch(0.175 0.01 260); --surface: oklch(0.225 0.012 260); --lane: oklch(0.2 0.011 260);
+      --line: oklch(0.31 0.014 260); --text: oklch(0.94 0.006 260); --muted: oklch(0.72 0.014 260);
+      --blue: oklch(0.74 0.13 255); --green: oklch(0.82 0.15 132); --amber: oklch(0.8 0.13 75);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: oklch(0.175 0.01 260); --surface: oklch(0.225 0.012 260); --lane: oklch(0.2 0.011 260);
+    --line: oklch(0.31 0.014 260); --text: oklch(0.94 0.006 260); --muted: oklch(0.72 0.014 260);
+    --blue: oklch(0.74 0.13 255); --green: oklch(0.82 0.15 132); --amber: oklch(0.8 0.13 75);
+  }
+  body { margin: 0; background: var(--bg); }
+  #diagram { margin: 0 auto; padding: 20px; background: var(--bg); }
+  svg { display: block; width: 100%; height: auto; font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .mono { font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+  .node { fill: var(--surface); stroke: var(--line); stroke-width: 1.2; }
+  .node.optional { stroke-dasharray: 5 4; }
+  .node.verify { fill: color-mix(in oklab, var(--blue) 9%, var(--surface)); stroke: color-mix(in oklab, var(--blue) 55%, var(--line)); }
+  .node.pr { stroke: color-mix(in oklab, var(--green) 60%, var(--line)); }
+  .run { fill: var(--surface); stroke: var(--line); stroke-width: 1.2; }
+  .chip { fill: var(--lane); stroke: var(--line); }
+  .chip.kept { fill: var(--surface); }
+  .chip.scratch { fill: none; stroke-dasharray: 4 3; }
+  .band { fill: var(--lane); }
+  .title { fill: var(--text); font-size: 15px; font-weight: 600; }
+  .cmd { fill: var(--blue); font-size: 12.5px; }
+  .note { fill: var(--muted); font-size: 12px; }
+  .gate { fill: var(--amber); font-size: 12px; font-weight: 550; }
+  .track { fill: var(--muted); font-size: 13px; font-weight: 600; }
+  .label { fill: var(--muted); font-size: 12px; }
+  .chiptext { fill: var(--text); font-size: 12px; }
+  .wire { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+  .wire.loop { stroke-dasharray: 5 4; }
+  .head { fill: var(--muted); }
+  .person { fill: none; stroke: var(--amber); stroke-width: 1.5; stroke-linecap: round; }
+</style>
+</head>
+<body>
+<div id="diagram">
+<svg id="svg" viewBox="0 0 1220 680" role="img" aria-label="Workflow: bugs go through /diagnosing-bugs, features through /grill-with-docs, /to-spec, /implement and harness-verifier to a pull request, and large features through /to-tickets and /run-tickets to one draft pull request. You approve the spec, the ticket split, and every merge.">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path class="head" d="M0 1 L9 5 L0 9 z"/>
+    </marker>
+  </defs>
+  <g id="content"></g>
+</svg>
+</div>
+<script>
+const NS = "http://www.w3.org/2000/svg";
+const root = document.getElementById("content");
+function add(tag, attrs, text, parent = root) {
+  const e = document.createElementNS(NS, tag);
+  for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+  if (text) e.textContent = text;
+  parent.append(e);
+  return e;
+}
+function person(x, y, parent = root) {
+  add("circle", { class: "person", cx: x + 6, cy: y + 3.5, r: 2.8 }, null, parent);
+  add("path", { class: "person", d: `M${x + 1} ${y + 12.5} a5 5 0 0 1 10 0` }, null, parent);
+}
+function wire(d, cls = "wire") { add("path", { class: cls, d, "marker-end": "url(#arrow)" }); }
+
+const W = 176, H = 80;
+const COL = [140, 360, 580, 800, 1020];
+function node(col, y, { title, cmd, note, gate, kind = "" }) {
+  const x = COL[col];
+  add("rect", { class: `node ${kind}`, x, y, width: W, height: H, rx: 12 });
+  add("text", { class: "title", x: x + 16, y: y + 27 }, title);
+  if (cmd) add("text", { class: "cmd mono", x: x + 16, y: y + 47 }, cmd);
+  if (gate) { person(x + 16, y + 56); add("text", { class: "gate", x: x + 34, y: y + 67 }, gate); }
+  else if (note) add("text", { class: "note", x: x + 16, y: y + 67 }, note);
+}
+
+// Track labels
+add("text", { class: "track", x: 20, y: 75 }, "Bugs");
+add("text", { class: "track", x: 20, y: 225 }, "Features");
+add("text", { class: "track", x: 20, y: 428 }, "Multi-session");
+
+// Bugs
+node(0, 30, { title: "Diagnose", cmd: "/diagnosing-bugs", note: "reproduce it first" });
+wire("M316 70 H888 V178");
+add("text", { class: "label", x: 600, y: 62, "text-anchor": "middle" }, "small fix, checked by the verifier");
+wire("M290 110 V145 H448 V178");
+add("text", { class: "label", x: 369, y: 138, "text-anchor": "middle" }, "bigger fix");
+
+// Features
+node(0, 180, { title: "Clarify", cmd: "/grill-with-docs", note: "only if unclear", kind: "optional" });
+node(1, 180, { title: "Spec", cmd: "/to-spec", gate: "You approve it" });
+node(2, 180, { title: "Implement", cmd: "/implement", note: "test-first with /tdd" });
+node(3, 180, { title: "Verify", cmd: "harness-verifier", note: "fresh context", kind: "verify" });
+node(4, 180, { title: "Pull request", note: "", gate: "You review, merge", kind: "pr" });
+add("text", { class: "note", x: COL[4] + 16, y: 227 }, "evidence from the Log");
+for (const x of [316, 536, 756, 976]) wire(`M${x} 220 H${x + 42}`);
+wire("M868 260 C868 312 688 312 688 262", "wire loop");
+add("text", { class: "label", x: 778, y: 318, "text-anchor": "middle" }, "findings: up to 3 repairs, then blocked");
+
+// Multi-session
+wire("M448 260 V381");
+add("text", { class: "label", x: 458, y: 324 }, "too big for one session");
+node(1, 383, { title: "Tickets", cmd: "/to-tickets", gate: "You approve the split" });
+wire("M536 423 H578");
+add("rect", { class: "run", x: 580, y: 355, width: 396, height: 137, rx: 12 });
+add("text", { class: "title", x: 596, y: 382 }, "Run tickets");
+add("text", { class: "cmd mono", x: 596, y: 402 }, "/run-tickets");
+add("text", { class: "note", x: 960, y: 382, "text-anchor": "end" }, "unattended, in one worktree");
+add("text", { class: "note", x: 960, y: 402, "text-anchor": "end" }, "stops at the first blocked ticket");
+[[596, 92, "pick ready"], [712, 136, "implement + verify"], [872, 88, "commit, push"]].forEach(([x, w, t]) => {
+  add("rect", { class: "chip kept", x, y: 418, width: w, height: 30, rx: 8 });
+  add("text", { class: "chiptext", x: x + w / 2, y: 437, "text-anchor": "middle" }, t);
+});
+wire("M688 433 H710"); wire("M848 433 H870");
+wire("M916 448 V464 H642 V450", "wire loop");
+add("text", { class: "label", x: 779, y: 482, "text-anchor": "middle" }, "next ticket");
+wire("M976 423 H1018");
+node(4, 383, { title: "Draft PR", note: "", gate: "You review, merge", kind: "pr" });
+add("text", { class: "note", x: COL[4] + 16, y: 430 }, "one per spec");
+
+// Legend
+person(1022, 37); add("text", { class: "label", x: 1042, y: 48 }, "You decide");
+add("rect", { class: "chip kept", x: 1020, y: 62, width: 16, height: 12, rx: 3 }); add("text", { class: "label", x: 1042, y: 72 }, "Kept in git");
+add("rect", { class: "chip scratch", x: 1020, y: 86, width: 16, height: 12, rx: 3 }); add("text", { class: "label", x: 1042, y: 96 }, "Scratch (gitignored)");
+
+// Where things land
+add("rect", { class: "band", x: 10, y: 530, width: 1200, height: 140, rx: 14 });
+add("text", { class: "track", x: 20, y: 572 }, "Where it");
+add("text", { class: "track", x: 20, y: 590 }, "lands");
+const LAND = [
+  [["GLOSSARY.md", "kept"], ["docs/adr/", "kept"]], "terms and decisions",
+  [["spec.md", "scratch"], ["issues/NN-*.md", "scratch"]], ".scratch/<slug>/",
+  [["tests", "kept"], ["commits", "kept"]], "red first, then green",
+  [["spec.md ## Log", "scratch"]], "verdict, local vs live",
+  [["PR description", "kept"]], "proofs and their results",
+];
+for (let i = 0; i < 5; i++) {
+  const x = COL[i], chips = LAND[i * 2], caption = LAND[i * 2 + 1];
+  chips.forEach(([t, kind], j) => {
+    const y = 552 + j * 36;
+    add("rect", { class: `chip ${kind}`, x, y, width: W, height: 28, rx: 8 });
+    add("text", { class: "chiptext mono", x: x + 12, y: y + 18.5 }, t);
+  });
+  add("text", { class: `note${i === 1 ? " mono" : ""}`, x, y: 642 }, caption);
+}
+
+const theme = new URLSearchParams(location.search).get("theme");
+if (theme) document.documentElement.dataset.theme = theme;
+</script>
+</body>
+</html>
