@@ -19,7 +19,7 @@ Use `GLOSSARY.md` terms in test names, and respect the ADRs in the area.
 
 - **Implementation-coupled:** mocks internal collaborators, tests private helpers, or checks through a side channel. The giveaway is that a pure refactor breaks it.
 - **Tautological:** the expected value is recomputed the way the code computes it, so the test can never disagree with the code. Expected amounts must come from an independent source:
-  - `SKILL.md` and `references/guide.md`;
+  - `skills/agentic-engineering/SKILL.md` and `skills/agentic-engineering/references/guide.md`;
   - a worked example from a spec or domain doc;
   - a literal the user confirmed.
   `assert total(cart) == sum(i.price for i in cart)` is tautological; `assert total(cart) == Decimal("42.50")` is not.

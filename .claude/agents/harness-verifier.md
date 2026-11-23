@@ -15,10 +15,10 @@ The spec or ticket path the caller passes (`.scratch/<slug>/...`), `AGENTS.md`, 
 
 ## Checks
 
-1. **Test integrity**: fail if any existing assertion, fixture, or proof was weakened, deleted, commented out, or skipped, or if a new test's expected values are recomputed the way the code computes them (tautological) instead of coming from `SKILL.md`, `references/guide.md`, or upstream mattpocock/skills or a confirmed literal.
+1. **Test integrity**: fail if any existing assertion, fixture, or proof was weakened, deleted, commented out, or skipped, or if a new test's expected values are recomputed the way the code computes them (tautological) instead of coming from `skills/agentic-engineering/SKILL.md`, `skills/agentic-engineering/references/guide.md`, or upstream mattpocock/skills or a confirmed literal.
 2. **Proofs**: run every command under the spec's **Done when** and **Must not change**, plus the CI gate from `AGENTS.md`. Classify each as **Local** (offline) or **Live** (needs network or a real install into a throwaway repo). A Live proof that cannot run here is `NOT RUN`, not a pass.
 3. **Spec axis**: Done-when items missing or partial; behavior not asked for (scope creep); items that look implemented but wrong. Quote the spec line for each.
-4. **Standards axis**: `[Bugs]` logic errors, edge cases, and new imports or dependencies that are not in the repo's manifest or do not exist; `[Security]` secrets, names, paths, commands or secrets from a real repo leaking into `assets/` templates, unsafe SQL; `[Compliance]` every `AGENTS.md` Invariant and Pattern and relevant ADRs. Cite the rule.
+4. **Standards axis**: `[Bugs]` logic errors, edge cases, and new imports or dependencies that are not in the repo's manifest or do not exist; `[Security]` secrets, names, paths, commands or secrets from a real repo leaking into `skills/agentic-engineering/assets/` templates, unsafe SQL; `[Compliance]` every `AGENTS.md` Invariant and Pattern and relevant ADRs. Cite the rule.
 
 ## Output
 

@@ -9,7 +9,7 @@ description: Interview the user in rounds to sharpen a plan, bug, or design unti
 
 Interview the user until you both understand the change the same way. Do not plan the implementation or edit product code.
 
-Read `AGENTS.md`, `ARCHITECTURE.md`, `GLOSSARY.md` and the ADRs in `docs/adr/` that touch the area. Also read `SKILL.md` and `references/guide.md`: the contract every template follows.
+Read `AGENTS.md`, `ARCHITECTURE.md`, `GLOSSARY.md` and the ADRs in `docs/adr/` that touch the area. Also read `skills/agentic-engineering/SKILL.md` and `skills/agentic-engineering/references/guide.md`: the contract every template follows.
 
 ## Rounds
 
