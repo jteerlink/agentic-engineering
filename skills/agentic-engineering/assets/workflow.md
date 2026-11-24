@@ -11,7 +11,7 @@
 |---|---|---|
 | Domain terms | `GLOSSARY.md` (created on first term) | Durable |
 | Hard-to-reverse decisions | `docs/adr/NNNN-slug.md` | Durable |
-| Plan, proofs, progress | `.scratch/<slug>/spec.md` (+ `issues/NN-*.md`) | Ephemeral, gitignored; delete after merge |
+| Plan, proofs, progress | `.scratch/<slug>/spec.md` (+ `issues/NN-*.md`) | Ephemeral, gitignored; `/retro` deletes it after merge |
 | Proof of done | Tests in the repo + PR description evidence | Durable via git |
 
 ## Loop

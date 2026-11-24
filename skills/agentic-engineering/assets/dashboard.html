@@ -117,6 +117,8 @@
   .cell[data-stage="attention"] { background: color-mix(in oklab, var(--amber) 6%, var(--lane)); }
   .cell-head { display: none; }
   .none { color: var(--muted); font-size: 12px; padding: 6px 4px; opacity: .7; }
+  #finished { margin-top: 8px; border-top: 1px solid var(--line); padding-top: 12px; }
+  #finished summary { cursor: pointer; color: var(--muted); font-weight: 600; margin: 0 2px 12px; width: fit-content; }
 
   /* Cards */
   .card { position: relative; overflow: hidden; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px 12px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; }
@@ -190,6 +192,8 @@
 <main>
   <div class="track" id="track" aria-label="Pipeline"></div>
   <div id="lanes"></div>
+  <!-- Static, so its open/closed state survives re-renders. -->
+  <details id="finished" hidden><summary></summary><div id="finished-lanes"></div></details>
 </main>
 <script>
 // ponytail: reads http.server directory listings + ticket files; no index, no second source of truth.
@@ -376,42 +380,49 @@ function renderTrack(tickets) {
 }
 
 function renderLanes(tickets) {
-  const lanes = document.getElementById("lanes");
   const slugs = [...new Set(tickets.map(t => t.slug))];
-  if (!slugs.length) {
-    const empty = el("p", "none", "No tickets yet. Run /to-tickets on an approved spec; its tickets appear here as they are written.");
-    lanes.replaceChildren(empty);
-    return;
+  // A spec whose tickets are all done folds into "Finished"; /retro deletes it from .scratch/ once merged.
+  const finished = slugs.filter(s => tickets.every(t => t.slug !== s || t.status === "done"));
+  const active = slugs.filter(s => !finished.includes(s));
+  const lanes = document.getElementById("lanes");
+  if (active.length) lanes.replaceChildren(...active.map(s => lane(s, tickets)));
+  else lanes.replaceChildren(el("p", "none", slugs.length
+    ? "Nothing in progress. Every spec here is finished."
+    : "No tickets yet. Run /to-tickets on an approved spec; its tickets appear here as they are written."));
+  const box = document.getElementById("finished");
+  box.hidden = !finished.length;
+  box.querySelector("summary").textContent = `Finished specs · ${finished.length}`;
+  document.getElementById("finished-lanes").replaceChildren(...finished.map(s => lane(s, tickets)));
+}
+
+function lane(slug, tickets) {
+  const mine = tickets.filter(t => t.slug === slug);
+  const sec = el("section", "lane");
+  sec.setAttribute("aria-label", `Spec ${slug}`);
+  const head = el("div", "lane-head");
+  head.append(el("h2", null, slug), el("span", "progress", `${mine.filter(t => t.status === "done").length} of ${mine.length} done`));
+  const pr = mine.map(t => t.pr).find(u => /^https:\/\/\S+$/.test(u));  // untrusted: plain https links only
+  if (pr) {
+    const a = el("a");
+    a.href = pr; a.target = "_blank"; a.rel = "noopener noreferrer";
+    const n = (pr.match(/\/pull\/(\d+)/) || [])[1];
+    a.append(icon("pr"), el("span", null, n ? `Draft PR #${n}` : "Draft PR"));
+    head.append(a);
   }
-  lanes.replaceChildren(...slugs.map(slug => {
-    const mine = tickets.filter(t => t.slug === slug);
-    const lane = el("section", "lane");
-    lane.setAttribute("aria-label", `Spec ${slug}`);
-    const head = el("div", "lane-head");
-    head.append(el("h2", null, slug), el("span", "progress", `${mine.filter(t => t.status === "done").length} of ${mine.length} done`));
-    const pr = mine.map(t => t.pr).find(u => /^https:\/\/\S+$/.test(u));  // untrusted: plain https links only
-    if (pr) {
-      const a = el("a");
-      a.href = pr; a.target = "_blank"; a.rel = "noopener noreferrer";
-      const n = (pr.match(/\/pull\/(\d+)/) || [])[1];
-      a.append(icon("pr"), el("span", null, n ? `Draft PR #${n}` : "Draft PR"));
-      head.append(a);
-    }
-    const grid = el("div", "lane-grid");
-    for (const s of STAGES) {
-      const items = mine.filter(t => t.stage === s.key);
-      const cell = el("div", items.length ? "cell" : "cell empty");
-      cell.dataset.stage = s.key;
-      const ch = el("div", "cell-head");
-      ch.append(icon(s.icon), el("span", null, `${s.label} · ${items.length}`));
-      cell.append(ch);
-      if (!items.length) cell.append(el("div", "none", "—"));
-      for (const t of items) cell.append(card(t));
-      grid.append(cell);
-    }
-    lane.append(head, grid);
-    return lane;
-  }));
+  const grid = el("div", "lane-grid");
+  for (const s of STAGES) {
+    const items = mine.filter(t => t.stage === s.key);
+    const cell = el("div", items.length ? "cell" : "cell empty");
+    cell.dataset.stage = s.key;
+    const ch = el("div", "cell-head");
+    ch.append(icon(s.icon), el("span", null, `${s.label} · ${items.length}`));
+    cell.append(ch);
+    if (!items.length) cell.append(el("div", "none", "—"));
+    for (const t of items) cell.append(card(t));
+    grid.append(cell);
+  }
+  sec.append(head, grid);
+  return sec;
 }
 
 function render(tickets) {

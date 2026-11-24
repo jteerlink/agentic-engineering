@@ -86,7 +86,7 @@ Run it again at any time to bring an existing harness up to date. It updates fil
 
 <sub>Source: <a href="docs/images/workflow.html">docs/images/workflow.html</a>. Edit it, then re-screenshot it with <code>?theme=light</code> and <code>?theme=dark</code>.</sub>
 
-Plans are ephemeral: a spec lives at `.scratch/<slug>/spec.md` (gitignored) and is deleted after merge. What lasts goes into tests, `docs/adr/` (decisions that are hard to reverse) and `GLOSSARY.md` (domain terms, created the first time one comes up).
+Plans are ephemeral: a spec lives at `.scratch/<slug>/spec.md` (gitignored) and `/retro` deletes it after merge. What lasts goes into tests, `docs/adr/` (decisions that are hard to reverse) and `GLOSSARY.md` (domain terms, created the first time one comes up).
 
 ### Example: a small fix
 
@@ -178,7 +178,7 @@ It builds a loop that reproduces the failure on demand before it forms any hypot
 | `/tdd` | Used by `/implement`; also on its own for test-first work. |
 | `/diagnosing-bugs` | Something is wrong, flaky, or slow. |
 | `/handoff` | The work moves to another tool (Claude ↔ Codex), directory, or person. |
-| `/retro` | After a session, to propose checks, navigation pointers, verifier rules and `AGENTS.md` trims for next time. |
+| `/retro` | After a session, to propose checks, navigation pointers, verifier rules and `AGENTS.md` trims for next time. It also deletes merged specs and tickets from `.scratch/`, after you confirm. |
 
 These are installed into the repo, so you call them by their short names. Only the installer, `/agentic-engineering:agentic-engineering`, carries the plugin prefix.
 
@@ -195,6 +195,7 @@ Then go to http://127.0.0.1:8765/dashboard.html.
 
 - **One row per spec**, with tickets lined up under **Waiting → Ready → Building → Done**. Blocked tickets and tickets with an unrecognised status go to **Needs attention**, so they never silently disappear.
 - **Motion only where work is happening:** the arrows into and out of Building animate, and building cards show "Being worked on". If nothing is building, nothing moves.
+- **Finished specs fold away:** a spec whose tickets are all done moves into a collapsed **Finished specs** section. `/retro` deletes it once its PR is merged.
 - **Stale is obvious:** if the server stops answering, a banner appears, the last good view stays, and all animation stops.
 - **Light, dark, or follow the system**, from the switch in the top right. Reduced-motion settings are respected.
 
