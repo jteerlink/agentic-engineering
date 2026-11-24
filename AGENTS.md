@@ -11,7 +11,7 @@ This repo is the `agentic-engineering` skill, shipped as a Claude Code and Codex
 
 - `skills/agentic-engineering/assets/` is the product: keep it target-agnostic and keep its `{{repo: ...}}` markers; never fill them there.
 - `.claude/`, `.codex/` and `.agents/skills` are this repo's own installed harness; the plugins never ship them. Editing `skills/agentic-engineering/assets/` does not update them; rerun `/agentic-engineering` here when a template change should apply to this repo too.
-- Claude files are the single source; Codex reads them through the `.agents/skills` symlink and `.codex/agents/harness-verifier.toml`, a pointer. Never write a second copy (ADR 0001).
+- Claude files are the single source; Codex reads them through the `.agents/skills` symlink and `.codex/agents/auditor.toml`, a pointer. Never write a second copy (ADR 0001).
 - Adding, renaming or removing an installed file changes `skills/agentic-engineering/SKILL.md` Install, `skills/agentic-engineering/SKILL.md` Output and the frontmatter `description` together.
 - Keep the MIT attribution comment at the top of every adapted skill and of `skills/agentic-engineering/SKILL.md`. Original skills (`run-tickets`) are listed in `ORIGINAL_SKILLS` in `tests/test_harness.py` instead.
 - `skills/agentic-engineering/assets/dashboard.html` stays self-contained and read-only: no network loads, no `innerHTML` (ticket text is untrusted), served from `.scratch/` only.
@@ -27,7 +27,7 @@ This repo is the `agentic-engineering` skill, shipped as a Claude Code and Codex
 ## Patterns
 
 - Copy `skills/agentic-engineering/assets/skills/to-tickets.md` for a new skill: `name` and `description` frontmatter, attribution comment, one H1. A skill written here (not adapted) drops the comment and joins `ORIGINAL_SKILLS`.
-- Copy `skills/agentic-engineering/assets/agents/harness-verifier.toml` for a Codex agent: a pointer to its Markdown file, no instructions of its own.
+- Copy `skills/agentic-engineering/assets/agents/auditor.toml` for a Codex agent: a pointer to its Markdown file, no instructions of its own.
 - Do not reintroduce feature ledgers or validators (`docs/features/`, `validate_harness.py`); `skills/agentic-engineering/SKILL.md` step 4 deletes them.
 
 ## Workflow

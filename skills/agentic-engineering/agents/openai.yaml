@@ -1,4 +1,4 @@
 interface:
   display_name: "Agentic Engineering"
-  short_description: "Create a repo-adaptive agent harness (specs, ADRs, verifier)"
+  short_description: "Create a repo-adaptive agent harness (specs, ADRs, auditor)"
   default_prompt: "Inspect this repository and create or reconcile its development harness."

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-A skill that a coding agent (Claude Code or Codex) runs inside a target repo to write that repo's agent harness: guides, workflow, skills and a verifier agent. No code runs at install time; the agent follows `skills/agentic-engineering/SKILL.md`.
+A skill that a coding agent (Claude Code or Codex) runs inside a target repo to write that repo's agent harness: guides, workflow, skills and an auditor agent. No code runs at install time; the agent follows `skills/agentic-engineering/SKILL.md`.
 
 ## Components
 
@@ -13,11 +13,11 @@ A skill that a coding agent (Claude Code or Codex) runs inside a target repo to 
 | workflow | Markdown template | The loop and phase-boundary rules | `skills/agentic-engineering/assets/workflow.md` | `skills/agentic-engineering/assets/workflow.md` |
 | skills | Markdown templates | grill-with-docs, to-spec, to-tickets, run-tickets, implement, tdd, diagnosing-bugs, handoff, retro | `skills/agentic-engineering/assets/skills/` | `skills/agentic-engineering/assets/skills/implement.md` |
 | dashboard | Static HTML + inline JS (optional install) | Read-only ticket board polling `.scratch` tickets over a localhost `http.server` | `skills/agentic-engineering/assets/dashboard.html` | `skills/agentic-engineering/assets/dashboard.html` |
-| verifier | Markdown + TOML pointer | Fresh-context verifier (Spec and Standards axes) | `skills/agentic-engineering/assets/agents/` | `skills/agentic-engineering/assets/agents/harness-verifier.md` |
+| auditor | Markdown + TOML pointer | Fresh-context auditor (Spec and Standards axes) | `skills/agentic-engineering/assets/agents/` | `skills/agentic-engineering/assets/agents/auditor.md` |
 | codex-ui | YAML | Display name and default prompt in Codex | `skills/agentic-engineering/agents/openai.yaml` | `skills/agentic-engineering/agents/openai.yaml` |
 | plugin | JSON manifests | Make the repo installable as a Claude Code and a Codex plugin that ships only the installer skill | `.claude-plugin/`, `.codex-plugin/`, `.agents/plugins/` | `.codex-plugin/plugin.json` |
 | own-harness | Filled copies of the templates | This repo's harness | `.claude/`, `.codex/`, `.agents/skills`, `docs/harness/` | `AGENTS.md` |
-| tests | Python stdlib | Docs paths, single-source mirrors, markers, attribution, verifier model pin, SKILL.md lists every skill, dashboard self-contained, plugin ships one skill, manifests agree | `tests/` | `tests/test_harness.py` |
+| tests | Python stdlib | Docs paths, single-source mirrors, markers, attribution, auditor model pin, SKILL.md lists every skill, dashboard self-contained, plugin ships one skill, manifests agree | `tests/` | `tests/test_harness.py` |
 
 ## Flow
 

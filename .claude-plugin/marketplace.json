@@ -2,6 +2,6 @@
   "name": "agentic-engineering",
   "owner": { "name": "jteerlink" },
   "plugins": [
-    { "name": "agentic-engineering", "source": "./", "description": "Install a repo-adaptive agent harness: AGENTS.md, ARCHITECTURE.md, specs, tickets, /implement with a fresh-context verifier, and an optional ticket dashboard." }
+    { "name": "agentic-engineering", "source": "./", "description": "Install a repo-adaptive agent harness: AGENTS.md, ARCHITECTURE.md, specs, tickets, /implement with a fresh-context auditor, and an optional ticket dashboard." }
   ]
 }

@@ -38,13 +38,13 @@ Each probe tests one prediction, and you change one variable at a time. Tag ever
 
 ## 5. Fix and regression test
 
-Turn the minimised repro into a failing test at a seam that exercises the real call path. If the only seam is too shallow to reproduce the bug, record that as a finding. Watch the test fail, fix the code, watch it pass, then rerun the original loop. Then spawn `harness-verifier` on the diff (with no spec it reports the Standards axis only) and repair any `Important` finding. If the fix is too big for that (several files, a design choice, or an approval gate), stop after the failing test and go through `/to-spec` -> `/implement` instead.
+Turn the minimised repro into a failing test at a seam that exercises the real call path. If the only seam is too shallow to reproduce the bug, record that as a finding. Watch the test fail, fix the code, watch it pass, then rerun the original loop. Then spawn `auditor` on the diff (with no spec it reports the Standards axis only) and repair any `Important` finding. If the fix is too big for that (several files, a design choice, or an approval gate), stop after the failing test and go through `/to-spec` -> `/implement` instead.
 
 ## 6. Clean up
 
 - The original loop is green.
 - The regression test passes, or the missing seam is documented.
-- `harness-verifier` returned PASS on the diff.
+- `auditor` returned PASS on the diff.
 - `grep -rn "DEBUG-"` is empty.
 - Throwaway scripts are deleted.
 - The hypothesis that proved correct is written in the commit or PR message.

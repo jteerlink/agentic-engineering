@@ -1,11 +1,11 @@
 # Agentic Engineering
 
-A Claude Code and Codex plugin that gives a repository a short, accurate agent harness, fitted to that repo: a root guide, an architecture map, a spec → implement workflow with a fresh-context verifier, and an optional live ticket board.
+A Claude Code and Codex plugin that gives a repository a short, accurate agent harness, fitted to that repo: a root guide, an architecture map, a spec → implement workflow with a fresh-context auditor, and an optional live ticket board.
 
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/images/dashboard-dark.png">
-    <img src="docs/images/dashboard-light.png" width="900" alt="The ticket board: tickets for two specs moving from Waiting through Ready, Building and Done, with one blocked ticket under Needs attention">
+    <img src="docs/images/dashboard-light.png" width="900" alt="The ticket board: tickets for two specs moving from Waiting through Ready, Building, Verifying and Done, with one blocked ticket under Needs attention">
   </picture>
   <br>
   <sub>The optional ticket board, showing tickets moving through the workflow.</sub>
@@ -18,7 +18,7 @@ You run one command in a repo. The agent reads the codebase, finds the real test
 - **`AGENTS.md`** (with `CLAUDE.md` pointing at it): invariants, real commands, patterns. Short and operational.
 - **`ARCHITECTURE.md`**: components, flow, and contracts.
 - **Nine workflow skills** in `.claude/skills/`, each filled in with this repo's own test seams and commands.
-- **A `harness-verifier` agent** that checks finished work in a fresh context, on two separate axes (does it meet the spec; does it meet the repo's standards).
+- **An `auditor` agent** that checks finished work in a fresh context, on two separate axes (does it meet the spec; does it meet the repo's standards).
 - **The ticket board** (only if you say yes when asked).
 
 Claude Code and Codex share one copy of everything. Codex reads the same skills through a symlink, so the two never drift apart.
@@ -65,8 +65,8 @@ docs/harness/workflow.md
 docs/harness/dashboard.html      only if you said yes
 docs/adr/0001-<slug>.md          only when a real boundary exists
 .claude/skills/<9 skills>/SKILL.md
-.claude/agents/harness-verifier.md
-.codex/agents/harness-verifier.toml
+.claude/agents/auditor.md
+.codex/agents/auditor.toml
 .agents/skills -> ../.claude/skills
 .gitignore                       + .scratch/, .agents/, .claude/
 ```
@@ -81,7 +81,7 @@ Run it again at any time to bring an existing harness up to date. It updates fil
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/workflow-dark.png">
-  <img src="docs/images/workflow-light.png" width="100%" alt="Workflow. Bugs start at /diagnosing-bugs: a small fix goes straight to harness-verifier, a bigger one to /to-spec. Features go /grill-with-docs (only if unclear), /to-spec (you approve it), /implement (test-first), harness-verifier (fresh context; findings loop back to /implement, up to 3 repairs), then a pull request you review and merge. A spec too big for one session goes to /to-tickets (you approve the split), then /run-tickets works each ready ticket unattended into one draft PR per spec. Below: where each step's output lands, either kept in git (GLOSSARY.md, docs/adr/, tests, commits, PR description) or scratch (spec.md, issues, the spec's Log).">
+  <img src="docs/images/workflow-light.png" width="100%" alt="Workflow. Bugs start at /diagnosing-bugs: a small fix goes straight to auditor, a bigger one to /to-spec. Features go /grill-with-docs (only if unclear), /to-spec (you approve it), /implement (test-first), auditor (fresh context; findings loop back to /implement, up to 3 repairs), then a pull request you review and merge. A spec too big for one session goes to /to-tickets (you approve the split), then /run-tickets works each ready ticket unattended into one draft PR per spec. Below: where each step's output lands, either kept in git (GLOSSARY.md, docs/adr/, tests, commits, PR description) or scratch (spec.md, issues, the spec's Log).">
 </picture>
 
 <sub>Source: <a href="docs/images/workflow.html">docs/images/workflow.html</a>. Edit it, then re-screenshot it with <code>?theme=light</code> and <code>?theme=dark</code>.</sub>
@@ -96,7 +96,7 @@ Skip the spec. Describe the fix and let `/implement` take it test-first:
 /implement Pagination drops the last item when the total is an exact multiple of the page size
 ```
 
-It writes a failing test, makes the smallest change, runs the repo's test gate, gets a verdict from `harness-verifier`, and hands back a PR description. It commits or opens a PR only when you ask.
+It writes a failing test, makes the smallest change, runs the repo's test gate, gets a verdict from `auditor`, and hands back a PR description. It commits or opens a PR only when you ask.
 
 ### Example: a feature
 
@@ -127,7 +127,7 @@ Status: approved
 /implement .scratch/csv-export/spec.md
 ```
 
-It runs the "Must not change" proofs first and stops if they are already red. Then it builds red-first, repairs at most 3 times per proof, and logs the verifier's verdict in the spec. Local and live results are recorded separately, so "not run" is never reported as "passed".
+It runs the "Must not change" proofs first and stops if they are already red. Then it builds red-first, repairs at most 3 times per proof, and logs the auditor's verdict in the spec. Local and live results are recorded separately, so "not run" is never reported as "passed".
 
 ### Example: work that spans sessions
 
@@ -164,7 +164,7 @@ It works through every ready ticket in one git worktree (`.claude/worktrees/csv-
 /diagnosing-bugs  The nightly import sometimes writes duplicate rows
 ```
 
-It builds a loop that reproduces the failure on demand before it forms any hypothesis. A small fix it makes itself, then runs `harness-verifier` on the diff; a bigger one goes through `/to-spec` → `/implement`.
+It builds a loop that reproduces the failure on demand before it forms any hypothesis. A small fix it makes itself, then runs `auditor` on the diff; a bigger one goes through `/to-spec` → `/implement`.
 
 ## Commands
 
@@ -178,7 +178,7 @@ It builds a loop that reproduces the failure on demand before it forms any hypot
 | `/tdd` | Used by `/implement`; also on its own for test-first work. |
 | `/diagnosing-bugs` | Something is wrong, flaky, or slow. |
 | `/handoff` | The work moves to another tool (Claude ↔ Codex), directory, or person. |
-| `/retro` | After a session, to propose checks, navigation pointers, verifier rules and `AGENTS.md` trims for next time. It also deletes merged specs and tickets from `.scratch/`, after you confirm. |
+| `/retro` | After a session, to propose checks, navigation pointers, auditor rules and `AGENTS.md` trims for next time. It also deletes merged specs and tickets from `.scratch/`, after you confirm. |
 
 These are installed into the repo, so you call them by their short names. Only the installer, `/agentic-engineering:agentic-engineering`, carries the plugin prefix.
 
@@ -193,8 +193,8 @@ python3 -m http.server 8765 --bind 127.0.0.1 -d .scratch
 
 Then go to http://127.0.0.1:8765/dashboard.html.
 
-- **One row per spec**, with tickets lined up under **Waiting → Ready → Building → Done**. Blocked tickets and tickets with an unrecognised status go to **Needs attention**, so they never silently disappear.
-- **Motion only where work is happening:** the arrows into and out of Building animate, and building cards show "Being worked on". If nothing is building, nothing moves.
+- **One row per spec**, with tickets lined up under **Waiting → Ready → Building → Verifying → Done**. Blocked tickets and tickets with an unrecognised status go to **Needs attention**, so they never silently disappear.
+- **Motion only where work is happening:** the arrows into and out of Building and Verifying animate; building cards show "Being worked on" and verifying cards "Auditor checking". If nothing is in progress, nothing moves.
 - **Finished specs fold away:** a spec whose tickets are all done moves into a collapsed **Finished specs** section. `/retro` deletes it once its PR is merged.
 - **Stale is obvious:** if the server stops answering, a banner appears, the last good view stays, and all animation stops.
 - **Light, dark, or follow the system**, from the switch in the top right. Reduced-motion settings are respected.
@@ -251,7 +251,7 @@ Teams that run coding agents keep reporting the same eight ways it goes wrong. E
 | Lessons stay in one chat and get repeated | **Learn once, enforce always** [2,4,5]: repeated corrections become rules every session loads | Same mistake twice → one new rule (`/retro`) |
 | "Done" is decided after the code is written | **Define done before code** [1,4,5]: agree on observable criteria and runnable checks first | `/to-spec`: every goal gets a proof that fails today |
 | Long tasks drift and lose progress | **One feature, state on disk** [3,4]: one scoped unit at a time, with progress kept in files | One `.scratch` spec, or one ticket, with its own Log |
-| Agents grade their own work too kindly | **The builder is not the checker** [4,5]: a fresh agent verifies; builders never approve themselves | `harness-verifier` reruns the proofs in a fresh context |
+| Agents grade their own work too kindly | **The builder is not the checker** [4,5]: a fresh agent verifies; builders never approve themselves | `auditor` reruns the proofs in a fresh context |
 | Agents take risky actions without asking | **Humans steer, agents execute** [1,2,5]: people set intent and approve risk | Approval gates; commits only on request; never merges |
 
 Sources:

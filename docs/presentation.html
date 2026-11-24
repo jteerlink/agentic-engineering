@@ -161,7 +161,7 @@ pre code { font-size: inherit; overflow-wrap: normal; }
     <h2 id="system-heading">The harness connects <em>instructions to evidence.</em></h2>
     <figure>
       <div class="diagram-scroll">
-        <svg class="diagram" viewBox="0 0 1120 340" role="img" aria-label="Read left to right: repo rules guide skills, skills build code and tests, and a fresh verifier checks the result. Durable docs (glossary and ADRs) sit under the repo rules. Skills read an ephemeral spec and log the outcome there.">
+        <svg class="diagram" viewBox="0 0 1120 340" role="img" aria-label="Read left to right: repo rules guide skills, skills build code and tests, and a fresh auditor checks the result. Durable docs (glossary and ADRs) sit under the repo rules. Skills read an ephemeral spec and log the outcome there.">
           <defs><marker id="system-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="currentColor"/></marker></defs>
           <rect class="node" x="0" y="40" width="225" height="130" rx="4"/>
           <text class="heading" x="20" y="78">Repo rules</text>
@@ -182,7 +182,7 @@ pre code { font-size: inherit; overflow-wrap: normal; }
           <path class="edge" d="M825 105H900" marker-end="url(#system-arrow)"/>
           <text class="sub" x="862" y="89" text-anchor="middle">review</text>
           <rect class="node" x="900" y="40" width="220" height="130" rx="4"/>
-          <text class="heading" x="920" y="78">Fresh verifier</text>
+          <text class="heading" x="920" y="78">Fresh auditor</text>
           <text x="920" y="111">Rerun proof</text>
           <text x="920" y="141">Report PASS / FAIL</text>
           <path class="edge" d="M412 179V249" marker-start="url(#system-arrow)" marker-end="url(#system-arrow)"/>
@@ -222,7 +222,7 @@ pre code { font-size: inherit; overflow-wrap: normal; }
           <tr class="group"><th colspan="3" scope="colgroup">Execution + verification</th></tr>
           <tr><td class="challenge">“Done” gets decided after the code is written</td><td class="pattern-name">Define done before code<span class="refs">[1,4,5]</span><span class="pattern-desc">Agree on observable criteria and runnable checks first.</span></td><td class="solution"><code>/to-spec</code>: done-when + failing proof first</td></tr>
           <tr><td class="challenge">Long tasks drift and lose progress</td><td class="pattern-name">One feature, state on disk<span class="refs">[3,4]</span><span class="pattern-desc">One scoped unit at a time; progress saved in files.</span></td><td class="solution">One <code>.scratch</code> spec; its Log holds progress</td></tr>
-          <tr><td class="challenge">Agents grade their own work too kindly</td><td class="pattern-name">Builder is not the checker<span class="refs">[4,5]</span><span class="pattern-desc">A fresh agent verifies; builders never self-approve.</span></td><td class="solution">Fresh <code>harness-verifier</code> reruns proof</td></tr>
+          <tr><td class="challenge">Agents grade their own work too kindly</td><td class="pattern-name">Builder is not the checker<span class="refs">[4,5]</span><span class="pattern-desc">A fresh agent verifies; builders never self-approve.</span></td><td class="solution">Fresh <code>auditor</code> reruns proof</td></tr>
           <tr><td class="challenge">Agents take risky actions without asking</td><td class="pattern-name">Humans steer, agents execute<span class="refs">[1,2,5]</span><span class="pattern-desc">People set intent and approve risk; agents do the work.</span></td><td class="solution">Approval gates; commit only on request</td></tr>
         </tbody>
       </table>
@@ -243,7 +243,7 @@ pre code { font-size: inherit; overflow-wrap: normal; }
     <div class="stack"><h2 id="bootstrap-heading">Install once. Run <em>/agentic-engineering</em> per repo.</h2><p class="lead">A Claude Code and Codex plugin. It inspects the real repo, reconciles its guides, and installs the workflow.</p></div>
     <div class="grid three content">
       <div class="open-block"><span class="label">Context</span><h3>Where and how to work</h3><p class="small"><code>AGENTS.md</code> · repo rules<br><code>CLAUDE.md</code> · imports the rules<br><code>ARCHITECTURE.md</code> · system map</p></div>
-      <div class="open-block active"><span class="label">Execution</span><h3>Reusable skills + reviewer</h3><p class="small"><code>.claude/skills/</code><br>grill-with-docs · to-spec · implement · tdd<br>diagnosing-bugs · to-tickets · run-tickets<br>handoff · retro</p><p class="small"><code>.claude/agents/harness-verifier.md</code></p></div>
+      <div class="open-block active"><span class="label">Execution</span><h3>Reusable skills + reviewer</h3><p class="small"><code>.claude/skills/</code><br>grill-with-docs · to-spec · implement · tdd<br>diagnosing-bugs · to-tickets · run-tickets<br>handoff · retro</p><p class="small"><code>.claude/agents/auditor.md</code></p></div>
       <div class="open-block"><span class="label">Process + knowledge</span><h3>How done is checked</h3><p class="small"><code>docs/harness/workflow.md</code><br><code>docs/harness/dashboard.html</code> · optional<br><code>GLOSSARY.md</code> · <code>docs/adr/</code> · durable<br><code>.scratch/</code> · specs, gitignored</p></div>
     </div>
     <div class="band row wrap"><span class="label">Install</span><code>/plugin install agentic-engineering@agentic-engineering</code><span aria-hidden="true">→</span><code>/agentic-engineering:agentic-engineering</code></div>
@@ -260,11 +260,11 @@ pre code { font-size: inherit; overflow-wrap: normal; }
       <span class="arrow" aria-hidden="true">→</span>
       <div class="route-item"><span class="label">Write the plan</span><h3><code>/to-spec</code></h3><p class="small">Agree test seams; proofs that fail today.</p><span class="artifact">Approved .scratch spec</span></div>
       <span class="arrow" aria-hidden="true">→</span>
-      <div class="route-item"><span class="label">Build + check + log</span><h3><code>/implement &lt;spec&gt;</code></h3><p class="small">Red-first tdd, run proofs, call the verifier.</p><span class="artifact">Tested diff + spec Log + PR evidence</span></div>
+      <div class="route-item"><span class="label">Build + check + log</span><h3><code>/implement &lt;spec&gt;</code></h3><p class="small">Red-first tdd, run proofs, call the auditor.</p><span class="artifact">Tested diff + spec Log + PR evidence</span></div>
     </div>
     <div class="grid two">
       <div class="open-block"><span class="label">Human handoff</span><p>You approve the spec. <code>/to-spec</code> prints the implement command.</p></div>
-      <div class="open-block active"><span class="label">Automatic handoff</span><p><code>/implement</code> calls the fresh verifier after its proofs pass.</p></div>
+      <div class="open-block active"><span class="label">Automatic handoff</span><p><code>/implement</code> calls the fresh auditor after its proofs pass.</p></div>
     </div>
     <footer class="slide-foot"><span>Facts are the agent's job; decisions are yours.</span><span>Spec writing does not edit product code.</span></footer>
   </div>
@@ -280,7 +280,7 @@ pre code { font-size: inherit; overflow-wrap: normal; }
           <defs><marker id="loop-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="currentColor"/></marker></defs>
           <rect class="node" x="0" y="70" width="225" height="120" rx="4"/><text class="heading" x="20" y="107">Read + red</text><text x="20" y="143">Spec, rules, ADRs</text><text class="sub" x="20" y="171">Proofs fail first</text>
           <rect class="node highlight" x="300" y="70" width="225" height="120" rx="4"/><text class="heading accent" x="320" y="107">Edit + run proof</text><text x="320" y="143">Smallest working diff</text><text class="sub" x="320" y="171">Every spec proof</text>
-          <rect class="node" x="600" y="70" width="225" height="120" rx="4"/><text class="heading" x="620" y="107">Fresh verifier</text><text x="620" y="143">Spec · Standards</text><text class="sub" x="620" y="171">Local vs Live proofs</text>
+          <rect class="node" x="600" y="70" width="225" height="120" rx="4"/><text class="heading" x="620" y="107">Fresh auditor</text><text x="620" y="143">Spec · Standards</text><text class="sub" x="620" y="171">Local vs Live proofs</text>
           <rect class="node" x="900" y="70" width="220" height="120" rx="4"/><text class="heading" x="920" y="107">Log + hand back</text><text x="920" y="143">Spec Log + status</text><text class="sub" x="920" y="171">Draft PR evidence</text>
           <path class="edge" d="M225 130H300" marker-end="url(#loop-arrow)"/><text class="sub" x="237" y="116">red</text>
           <path class="edge" d="M525 130H600" marker-end="url(#loop-arrow)"/><text class="sub" x="538" y="116">exit 0</text>
@@ -309,7 +309,7 @@ pre code { font-size: inherit; overflow-wrap: normal; }
     </div>
     <div class="grid two">
       <div class="open-block active"><span class="label">Stops, never guesses</span><p>Stops at the first blocked ticket; its Log is the handoff. A rerun resumes. Never merges, marks ready, or deploys.</p></div>
-      <div class="open-block"><span class="label">Optional ticket board</span><p>A read-only page that shows every ticket live: Waiting, Ready, Building, Done, Needs attention.</p></div>
+      <div class="open-block"><span class="label">Optional ticket board</span><p>A read-only page that shows every ticket live: Waiting, Ready, Building, Verifying, Done, Needs attention.</p></div>
     </div>
     <footer class="slide-foot"><span>Running /run-tickets approves pushing that spec's draft PR, nothing more.</span><span>Tickets stay in the main checkout; the board reads them there.</span></footer>
   </div>
@@ -343,7 +343,7 @@ Status: approved
 - [ ] Existing report totals stay the same
   proof: pytest tests/test_reports.py
 ## Log
-verifier PASS · local 2/2 · live NOT RUN</code></pre></div>
+auditor PASS · local 2/2 · live NOT RUN</code></pre></div>
       <div class="stack"><span class="label">What outlives the spec</span>
         <div class="status-list content">
           <div><span class="status">terms</span><p><code>GLOSSARY.md</code><br><span class="small">Domain language only, with words to avoid.</span></p></div>
@@ -360,13 +360,13 @@ verifier PASS · local 2/2 · live NOT RUN</code></pre></div>
 <section class="slide" id="checks" aria-labelledby="checks-heading">
   <div class="frame">
     <header class="slide-head"><span class="kicker">Independent review</span><span class="slide-no">10 / 12</span></header>
-    <h2 id="checks-heading">One fresh verifier.<br><em>Two axes, never merged.</em></h2>
+    <h2 id="checks-heading">One fresh auditor.<br><em>Two axes, never merged.</em></h2>
     <div class="grid two content">
       <div class="open-block active"><span class="label">Spec axis</span><h3>Did it do what was asked?</h3><p>Done-when items missing or partial.</p><p>Scope creep; implemented but wrong.</p><p class="small">Quotes the spec line for each finding.</p></div>
       <div class="open-block"><span class="label">Standards axis</span><h3>Does it follow the repo's rules?</h3><p>Bugs, security, AGENTS.md invariants, ADRs.</p><p>Test integrity: nothing weakened, nothing tautological.</p><p class="small">Cites the rule for each finding.</p></div>
     </div>
     <div class="band"><p><strong>Proofs are reported Local and Live.</strong> A live check that cannot run here is NOT RUN, never a pass.</p></div>
-    <footer class="slide-foot"><span>Verifier never edits files.</span><span>Important findings block done.</span></footer>
+    <footer class="slide-foot"><span>Auditor never edits files.</span><span>Important findings block done.</span></footer>
   </div>
 </section>
 

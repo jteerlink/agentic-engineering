@@ -60,7 +60,7 @@
     font: 14px/1.45 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
     font-variant-numeric: tabular-nums;
     --gap: 28px;
-    --cols: repeat(4, minmax(0, 1fr)) minmax(0, 1.15fr);
+    --cols: repeat(5, minmax(0, 1fr)) minmax(0, 1.15fr);
   }
   ::selection { background: color-mix(in oklab, var(--blue) 30%, transparent); }
   :focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; border-radius: 6px; }
@@ -92,7 +92,7 @@
   .node .count { margin-left: auto; font-weight: 650; font-size: 15px; }
   .node[data-stage="waiting"] svg.i { color: var(--muted); }
   .node[data-stage="ready"] svg.i { color: var(--text); }
-  .node[data-stage="building"] svg.i { color: var(--blue); }
+  .node[data-stage="building"] svg.i, .node[data-stage="verifying"] svg.i { color: var(--blue); }
   .node[data-stage="done"] svg.i { color: var(--green); }
   .node[data-stage="attention"] svg.i { color: var(--amber); }
   .node.active { border-color: color-mix(in oklab, var(--blue) 55%, var(--line)); background: color-mix(in oklab, var(--blue) 8%, var(--surface)); }
@@ -130,8 +130,8 @@
   .card .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
   .chip { display: inline-flex; align-items: center; gap: 4px; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--line); font-size: 12px; color: var(--muted); }
   .log { margin: 4px 0 0; font: 12px/1.45 ui-monospace, "SF Mono", Menlo, monospace; white-space: pre-wrap; overflow-wrap: anywhere; color: var(--muted); display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
-  .card[data-tone="building"] { border-color: color-mix(in oklab, var(--blue) 50%, var(--line)); }
-  .card[data-tone="building"] .meta { color: var(--blue); }
+  .card[data-tone="building"], .card[data-tone="verifying"] { border-color: color-mix(in oklab, var(--blue) 50%, var(--line)); }
+  .card[data-tone="building"] .meta, .card[data-tone="verifying"] .meta { color: var(--blue); }
   .card[data-tone="done"] .meta { color: var(--green); }
   .card[data-tone="blocked"] { border-color: color-mix(in oklab, var(--amber) 55%, var(--line)); }
   .card[data-tone="blocked"] .meta { color: var(--amber); }
@@ -143,7 +143,7 @@
   /* Building: a light band sweeps the card's bottom edge */
   .scan { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: color-mix(in oklab, var(--blue) 18%, transparent); }
   .scan::after { content: ""; position: absolute; inset: 0 auto 0 0; width: 35%; background: linear-gradient(90deg, transparent, var(--blue), transparent); animation: sweep 1.8s cubic-bezier(.45, 0, .55, 1) infinite; animation-delay: var(--phase-scan, 0ms); }
-  .card[data-tone="building"] .pulse { animation: breathe 1.8s ease-in-out infinite; animation-delay: var(--phase-scan, 0ms); }
+  .card[data-tone="building"] .pulse, .card[data-tone="verifying"] .pulse { animation: breathe 1.8s ease-in-out infinite; animation-delay: var(--phase-scan, 0ms); }
 
   /* A card that just changed stage */
   .card.arrived { animation: arrive .6s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -161,7 +161,7 @@
   body.stale .conn.flowing { color: var(--line); }
 
   @media (prefers-reduced-motion: reduce) {
-    .node.active .spin-arc, .conn.flowing .line, .scan::after, .card[data-tone="building"] .pulse { animation: none; }
+    .node.active .spin-arc, .conn.flowing .line, .scan::after, .card .pulse { animation: none; }
     .scan { background: color-mix(in oklab, var(--blue) 70%, transparent); }
     .card.arrived { animation: arrive-still .6s ease-out; }
     @keyframes arrive-still { from { border-color: var(--blue); background: color-mix(in oklab, var(--blue) 12%, var(--surface)); } }
@@ -198,16 +198,18 @@
 <script>
 // ponytail: reads http.server directory listings + ticket files; no index, no second source of truth.
 const STAGES = [
-  { key: "waiting", label: "Waiting", hint: "Blocked by a ticket", icon: "clock" },
+  { key: "waiting", label: "Waiting", hint: "On a blocker", icon: "clock" },
   { key: "ready", label: "Ready", hint: "Next up", icon: "circle" },
   { key: "building", label: "Building", hint: "In /implement", icon: "spin" },
-  { key: "done", label: "Done", hint: "Draft PR awaits review", icon: "check" },
+  { key: "verifying", label: "Verifying", hint: "With the auditor", icon: "lens" },
+  { key: "done", label: "Done", hint: "Awaits your review", icon: "check" },
   { key: "attention", label: "Needs attention", hint: "Blocked or unreadable", icon: "alert" },
 ];
 const ICONS = {
   clock: [["circle", { cx: 12, cy: 12, r: 8.5 }], ["path", { d: "M12 7.5V12l3 2" }]],
   circle: [["circle", { cx: 12, cy: 12, r: 8.5 }], ["circle", { cx: 12, cy: 12, r: 2.5 }]],
   spin: [["circle", { cx: 12, cy: 12, r: 8.5, opacity: 0.3 }], ["path", { d: "M12 3.5a8.5 8.5 0 0 1 8.5 8.5", class: "spin-arc" }]],
+  lens: [["circle", { cx: 10.5, cy: 10.5, r: 6 }], ["path", { d: "m15 15 5 5" }]],
   check: [["circle", { cx: 12, cy: 12, r: 8.5 }], ["path", { d: "m8.5 12.5 2.5 2.5 4.5-5" }]],
   alert: [["path", { d: "M10.3 4.6 3.2 17a2 2 0 0 0 1.7 3h14.2a2 2 0 0 0 1.7-3L13.7 4.6a2 2 0 0 0-3.4 0Z" }], ["path", { d: "M12 9.5v4" }], ["path", { d: "M12 16.8h.01" }]],
   pr: [["circle", { cx: 6, cy: 6, r: 2.25 }], ["circle", { cx: 6, cy: 18, r: 2.25 }], ["circle", { cx: 18, cy: 18, r: 2.25 }], ["path", { d: "M6 8.25v7.5" }], ["path", { d: "M18 15.75V10a3 3 0 0 0-3-3h-4" }], ["path", { d: "m13 5-2 2 2 2" }]],
@@ -259,7 +261,7 @@ function classify(t, all) {
       return !dep || dep.status !== "done";
     });
     t.stage = t.waitingOn.length ? "waiting" : "ready";
-  } else if (t.status === "building" || t.status === "done") {
+  } else if (["building", "verifying", "done"].includes(t.status)) {
     t.stage = t.status;
   } else {
     t.stage = "attention";
@@ -342,6 +344,8 @@ function card(t) {
     meta.append(el("span", null, "Blockers done"));
   } else if (t.stage === "building") {
     meta.append(el("span", "pulse"), el("span", null, "Being worked on"));
+  } else if (t.stage === "verifying") {
+    meta.append(el("span", "pulse"), el("span", null, "Auditor checking"));
   } else if (t.stage === "done") {
     meta.append(icon("check"), el("span", null, "Verified"));
   } else if (t.tone === "blocked") {
@@ -353,7 +357,7 @@ function card(t) {
   if (t.log && (t.stage === "attention" || t.stage === "done")) {
     c.append(el("pre", "log", t.stage === "done" ? t.log.split("\n")[0] : t.log));
   }
-  if (t.stage === "building") c.append(el("div", "scan"));
+  if (t.stage === "building" || t.stage === "verifying") c.append(el("div", "scan"));
   const before = prevStage.get(t.id);
   if (before && before !== t.stage) c.classList.add("arrived");
   return c;
@@ -361,19 +365,20 @@ function card(t) {
 
 function renderTrack(tickets) {
   const track = document.getElementById("track");
-  const building = tickets.some(t => t.stage === "building");
+  const busy = k => (k === "building" || k === "verifying") && tickets.some(t => t.stage === k);
   const nodes = STAGES.map((s, i) => {
     const n = el("div", "node");
     n.dataset.stage = s.key;
     const count = tickets.filter(t => t.stage === s.key).length;
-    if (s.key === "building" && count) n.classList.add("active");
+    if (busy(s.key)) n.classList.add("active");
     if (s.key === "attention" && count) n.classList.add("alert");
     const txt = el("div", "txt");
     txt.append(el("span", "label", s.label), el("span", "hint", s.hint));
     n.append(icon(s.icon), txt, el("span", "count", String(count)));
     n.setAttribute("aria-label", `${s.label}: ${count}`);
     // Arrows join the main flow; "Needs attention" is a side exit, so no arrow into it.
-    if (i < 3) n.append(connector(building && (s.key === "ready" || s.key === "building")));
+    // An arrow flows when the stage on either end has work in progress.
+    if (i < 4) n.append(connector(busy(s.key) || busy(STAGES[i + 1].key)));
     return n;
   });
   track.replaceChildren(...nodes);

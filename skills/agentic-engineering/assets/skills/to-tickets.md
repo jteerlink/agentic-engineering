@@ -20,7 +20,7 @@ Split the spec into **vertical slices**. Each slice is a narrow but complete pat
 ```md
 # NN: <title>
 Blocked by: <NN, NN> | none
-Status: ready | done | blocked
+Status: ready | building | verifying | done | blocked
 
 <the end-to-end behavior this ticket makes work>
 

@@ -13,12 +13,12 @@ Running this skill is the user's request to commit, push, and open or update **o
 2. **Board.** If `docs/harness/dashboard.html` exists, make sure the ticket board is up so the user can watch: if `curl -sf http://127.0.0.1:8765/ | grep -q '<slug>/'` fails, run `ln -sf ../docs/harness/dashboard.html .scratch/dashboard.html` in the main checkout, then start `python3 -m http.server 8765 --bind 127.0.0.1 -d .scratch` there in the background so it outlives the run (if port 8765 is taken by something else, use 8766). Leave it running. Tell the user the URL: `http://127.0.0.1:<port>/dashboard.html`.
 3. If any ticket is `Status: blocked`, go to **Finish**. A human resolves it first.
 4. Worktree: reuse `.claude/worktrees/<slug>` if `git worktree list` shows it. Otherwise, from the main checkout, run `git fetch` and then `git worktree add --no-track .claude/worktrees/<slug> -b tickets/<slug> origin/{{repo: base branch, e.g. main}}`. If branch `tickets/<slug>` already exists, run `git worktree add .claude/worktrees/<slug> tickets/<slug>` instead. Never put it under `.scratch/`, because the dashboard serves that folder.
-5. If the worktree has uncommitted changes and no ticket is `building`, stop and report them. They are leftovers nobody owns.
+5. If the worktree has uncommitted changes and no ticket is `building` or `verifying`, stop and report them. They are leftovers nobody owns.
 6. If the branch has commits beyond the base, and either its remote lacks some of them or no draft PR exists for it, run **Publish** before picking. A new branch with no commits has nothing to publish yet.
 
 ## Loop
 
-1. **Pick.** If a ticket is `Status: building`, a previous run stopped mid-ticket: resume it. Otherwise take the lowest-numbered `ready` ticket whose `Blocked by` tickets are all `done`. If none is left, go to **Finish**.
+1. **Pick.** If a ticket is `Status: building` or `verifying`, a previous run stopped mid-ticket: resume it. Otherwise take the lowest-numbered `ready` ticket whose `Blocked by` tickets are all `done`. If none is left, go to **Finish**.
 2. **Build.** Run `/implement <absolute path to the ticket in the main checkout>` inside the worktree.
 3. **Check.** Continue only if the ticket now says `Status: done`. Any other status (`blocked`, or still `building` because `/implement` stopped for a red baseline, a spec problem, or an approval gate) goes to **Finish** with its changes left uncommitted.
 4. **Commit** the ticket's changes in the worktree (message: the ticket title), then run **Publish**.

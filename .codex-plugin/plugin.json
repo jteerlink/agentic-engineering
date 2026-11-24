@@ -1,14 +1,14 @@
 {
   "name": "agentic-engineering",
-  "version": "0.1.2",
-  "description": "Install a repo-adaptive agent harness: AGENTS.md, ARCHITECTURE.md, specs, tickets, /implement with a fresh-context verifier, and an optional ticket dashboard.",
+  "version": "0.1.3",
+  "description": "Install a repo-adaptive agent harness: AGENTS.md, ARCHITECTURE.md, specs, tickets, /implement with a fresh-context auditor, and an optional ticket dashboard.",
   "author": { "name": "jteerlink" },
   "repository": "https://github.com/jteerlink/agentic-engineering",
   "license": "MIT",
   "skills": "./skills/",
   "interface": {
     "displayName": "Agentic Engineering",
-    "shortDescription": "Create a repo-adaptive agent harness (specs, ADRs, verifier)",
+    "shortDescription": "Create a repo-adaptive agent harness (specs, ADRs, auditor)",
     "category": "Developer Tools",
     "defaultPrompt": ["Inspect this repository and create or reconcile its development harness."]
   }

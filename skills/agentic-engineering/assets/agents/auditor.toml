@@ -1,0 +1,7 @@
+name = "auditor"
+description = "Fresh-context auditor run by /implement before work is called done. Runs the spec's proofs and reviews the diff on two separate axes (Spec, Standards). Report only; never edit files."
+
+# Single source: the Claude agent file. Keep instructions there.
+developer_instructions = '''
+Read `.claude/agents/auditor.md` (ignore its YAML frontmatter) and follow it exactly. Report only; never edit files.
+'''

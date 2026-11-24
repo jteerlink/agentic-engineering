@@ -36,8 +36,8 @@ class Harness(unittest.TestCase):
         msg = "Codex must read the Claude files, not a copy (docs/adr/0001-claude-files-are-the-single-source.md)."
         self.assertEqual(os.readlink(ROOT / ".agents/skills"), "../.claude/skills", msg)
         self.assertEqual((ROOT / "CLAUDE.md").read_text().splitlines()[0], "@AGENTS.md", msg)
-        for toml in (SKILL / "assets/agents/harness-verifier.toml", ROOT / ".codex/agents/harness-verifier.toml"):
-            self.assertIn("Read `.claude/agents/harness-verifier.md`", toml.read_text(), f"{toml}: {msg}")
+        for toml in (SKILL / "assets/agents/auditor.toml", ROOT / ".codex/agents/auditor.toml"):
+            self.assertIn("Read `.claude/agents/auditor.md`", toml.read_text(), f"{toml}: {msg}")
 
     def test_installed_files_have_no_markers(self):
         for d in (".claude", ".codex"):
@@ -45,8 +45,8 @@ class Harness(unittest.TestCase):
                 if f.is_file():
                     self.assertNotIn("{{repo:", f.read_text(), f"{f.relative_to(ROOT)} has an unfilled marker; fill it from this repo's facts.")
 
-    def test_verifier_model_pinned_to_opus(self):
-        for f in (SKILL / "assets/agents/harness-verifier.md", ROOT / ".claude/agents/harness-verifier.md"):
+    def test_auditor_model_pinned_to_opus(self):
+        for f in (SKILL / "assets/agents/auditor.md", ROOT / ".claude/agents/auditor.md"):
             front = f.read_text().split("---")[1]
             self.assertIn("\nmodel: opus\n", front, f"{f}: pin `model: opus` so verification always runs on the strongest model.")
 

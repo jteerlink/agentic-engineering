@@ -21,7 +21,7 @@ Write down what was decided, without running a new interview. The spec is a work
 
 ```md
 # <title>
-Status: draft | approved | building | done | blocked
+Status: draft | approved | building | verifying | done | blocked
 
 ## Problem
 <what the user sees today, in their words>
@@ -49,7 +49,7 @@ Status: draft | approved | building | done | blocked
 - <AGENTS.md invariants touched, approvals needed, live checks that need credentials or network>
 
 ## Log
-<written by /implement: verifier verdict with local and live results; if blocked: root cause, approach, tried / failed / untried>
+<written by /implement: auditor verdict with local and live results; if blocked: root cause, approach, tried / failed / untried>
 ```
 
 Keep paths and code out of Decisions and Solution, because they go stale. Paths belong only in proof commands and seams. If the spec has no Done-when items, it is not a spec yet.

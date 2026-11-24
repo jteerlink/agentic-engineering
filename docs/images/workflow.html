@@ -55,7 +55,7 @@
 </head>
 <body>
 <div id="diagram">
-<svg id="svg" viewBox="0 0 1220 680" role="img" aria-label="Workflow: bugs go through /diagnosing-bugs, features through /grill-with-docs, /to-spec, /implement and harness-verifier to a pull request, and large features through /to-tickets and /run-tickets to one draft pull request. You approve the spec, the ticket split, and every merge.">
+<svg id="svg" viewBox="0 0 1220 680" role="img" aria-label="Workflow: bugs go through /diagnosing-bugs, features through /grill-with-docs, /to-spec, /implement and auditor to a pull request, and large features through /to-tickets and /run-tickets to one draft pull request. You approve the spec, the ticket split, and every merge.">
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path class="head" d="M0 1 L9 5 L0 9 z"/>
@@ -99,7 +99,7 @@ add("text", { class: "track", x: 20, y: 428 }, "Multi-session");
 // Bugs
 node(0, 30, { title: "Diagnose", cmd: "/diagnosing-bugs", note: "reproduce it first" });
 wire("M316 70 H888 V178");
-add("text", { class: "label", x: 600, y: 62, "text-anchor": "middle" }, "small fix, checked by the verifier");
+add("text", { class: "label", x: 600, y: 62, "text-anchor": "middle" }, "small fix, checked by the auditor");
 wire("M290 110 V145 H448 V178");
 add("text", { class: "label", x: 369, y: 138, "text-anchor": "middle" }, "bigger fix");
 
@@ -107,7 +107,7 @@ add("text", { class: "label", x: 369, y: 138, "text-anchor": "middle" }, "bigger
 node(0, 180, { title: "Clarify", cmd: "/grill-with-docs", note: "only if unclear", kind: "optional" });
 node(1, 180, { title: "Spec", cmd: "/to-spec", gate: "You approve it" });
 node(2, 180, { title: "Implement", cmd: "/implement", note: "test-first with /tdd" });
-node(3, 180, { title: "Verify", cmd: "harness-verifier", note: "fresh context", kind: "verify" });
+node(3, 180, { title: "Verify", cmd: "auditor", note: "fresh context", kind: "verify" });
 node(4, 180, { title: "Pull request", note: "", gate: "You review, merge", kind: "pr" });
 add("text", { class: "note", x: COL[4] + 16, y: 227 }, "evidence from the Log");
 for (const x of [316, 536, 756, 976]) wire(`M${x} 220 H${x + 42}`);
