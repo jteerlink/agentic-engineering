@@ -10,10 +10,11 @@ Running this skill is the user's request to commit, push, and open or update **o
 ## Setup
 
 1. The main checkout is the first path in `git worktree list`. Tickets live there (`.scratch/<slug>/issues/*.md`), because `.scratch/` is gitignored and does not exist inside a worktree. Read the spec and the tickets.
-2. If any ticket is `Status: blocked`, go to **Finish**. A human resolves it first.
-3. Worktree: reuse `.claude/worktrees/<slug>` if `git worktree list` shows it. Otherwise, from the main checkout, run `git fetch` and then `git worktree add --no-track .claude/worktrees/<slug> -b tickets/<slug> origin/{{repo: base branch, e.g. main}}`. If branch `tickets/<slug>` already exists, run `git worktree add .claude/worktrees/<slug> tickets/<slug>` instead. Never put it under `.scratch/`, because the dashboard serves that folder.
-4. If the worktree has uncommitted changes and no ticket is `building`, stop and report them. They are leftovers nobody owns.
-5. If the branch has commits beyond the base, and either its remote lacks some of them or no draft PR exists for it, run **Publish** before picking. A new branch with no commits has nothing to publish yet.
+2. **Board.** If `docs/harness/dashboard.html` exists, make sure the ticket board is up so the user can watch: if `curl -sf http://127.0.0.1:8765/ | grep -q '<slug>/'` fails, run `ln -sf ../docs/harness/dashboard.html .scratch/dashboard.html` in the main checkout, then start `python3 -m http.server 8765 --bind 127.0.0.1 -d .scratch` there in the background so it outlives the run (if port 8765 is taken by something else, use 8766). Leave it running. Tell the user the URL: `http://127.0.0.1:<port>/dashboard.html`.
+3. If any ticket is `Status: blocked`, go to **Finish**. A human resolves it first.
+4. Worktree: reuse `.claude/worktrees/<slug>` if `git worktree list` shows it. Otherwise, from the main checkout, run `git fetch` and then `git worktree add --no-track .claude/worktrees/<slug> -b tickets/<slug> origin/{{repo: base branch, e.g. main}}`. If branch `tickets/<slug>` already exists, run `git worktree add .claude/worktrees/<slug> tickets/<slug>` instead. Never put it under `.scratch/`, because the dashboard serves that folder.
+5. If the worktree has uncommitted changes and no ticket is `building`, stop and report them. They are leftovers nobody owns.
+6. If the branch has commits beyond the base, and either its remote lacks some of them or no draft PR exists for it, run **Publish** before picking. A new branch with no commits has nothing to publish yet.
 
 ## Loop
 

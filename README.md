@@ -184,7 +184,7 @@ These are installed into the repo, so you call them by their short names. Only t
 
 ## Ticket board
 
-Say yes when the installer asks, and the board is installed at `docs/harness/dashboard.html`. To open it:
+Say yes when the installer asks, and the board is installed at `docs/harness/dashboard.html`. `/run-tickets` starts it in the background and gives you the link. Outside a run, ask the agent to start the ticket board, or run it yourself from the repo root:
 
 ```
 ln -sf ../docs/harness/dashboard.html .scratch/dashboard.html

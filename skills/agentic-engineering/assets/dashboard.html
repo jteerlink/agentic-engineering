@@ -464,8 +464,17 @@ try { saved = localStorage.getItem("ticket-board-theme") || "auto"; } catch {}
 setTheme(saved);
 for (const b of document.querySelectorAll(".theme button")) b.addEventListener("click", () => setTheme(b.dataset.theme));
 
-refresh();
-setInterval(refresh, POLL_MS);
+// The board reads the folder it is served from, so anywhere but the root of a served .scratch/
+// (file://, docs/harness/) it would show a false "No tickets yet". Say how to open it instead.
+const dir = location.pathname.replace(/[^/]*$/, "");
+if (location.protocol === "file:" || !(dir === "/" || dir.endsWith("/.scratch/"))) {
+  document.body.classList.add("stale");
+  document.getElementById("live-text").textContent = "Not connected";
+  document.getElementById("stale").textContent = "This page reads tickets from the folder it is served from, so open it from .scratch/. From the repo root run: ln -sf ../docs/harness/dashboard.html .scratch/dashboard.html && python3 -m http.server 8765 --bind 127.0.0.1 -d .scratch, then open http://127.0.0.1:8765/dashboard.html";
+} else {
+  refresh();
+  setInterval(refresh, POLL_MS);
+}
 setInterval(updateAges, 1000);
 </script>
 </body>
